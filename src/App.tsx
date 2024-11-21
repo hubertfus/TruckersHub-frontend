@@ -1,12 +1,12 @@
 import './App.css'
+import LandingPage from "./pages/landingPage/LandingPage.tsx";
 
 function App() {
-
-  return (
-    <>
-      
-    </>
-  )
+    return (
+        <>
+            <LandingPage/>
+        </>
+    )
 }
 
 export default App
