@@ -1,18 +1,17 @@
-import Header from "../../components/header/Header.tsx";
 import "./LandingPage.css";
+import {Link} from "react-router-dom";
 
 function LandingPage() {
     return (
         <>
-            <Header/>
             <div className="hero bg-base-200 min-h-screen " style={{
                 backgroundImage: "url(https://airport.nridigital.com/airport/air_jun23/which_country_best_logistics_hub/461815/logistics_hub.960_0_1.jpg)",
             }}>
                 <div className="hero-overlay bg-opacity-90"></div>
-                <div className="hero-content flex-col lg:flex-row-reverse max-w-screen-lg">
+                <div className="hero-content pt-0 pb-0 flex-col lg:flex-row-reverse max-w-screen-lg">
                     <div className="text-center lg:text-left">
                         <h1 className="text-5xl font-bold hero-text">Login now!</h1>
-                        <p className="py-6 hero-text">
+                        <p className="py-2 hero-text">
                             Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
                             quasi. In deleniti eaque aut repudiandae et a id nisi.
                         </p>
@@ -34,8 +33,8 @@ function LandingPage() {
                                 <div className="flex flex-row justify-between items-end">
                                     <label className="label flex flex-col items-start">
                                         Dont have an account?
-                                        <a href="#" className="label-text-alt link link-hover text-blue-700">Sign
-                                            Up</a>
+                                        <Link to="/register" className="label-text-alt link link-hover text-blue-700">Sign
+                                            Up</Link>
                                     </label>
                                     <label className="label">
                                         <a href="#" className="label-text-alt link link-hover text-blue-700">Forgot
