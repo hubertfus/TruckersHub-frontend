@@ -4,11 +4,11 @@ import {Link} from "react-router-dom";
 function LandingPage() {
     return (
         <>
-            <div className="hero bg-base-200 min-h-screen " style={{
+            <div id="test" className="hero bg-base-200 " style={{
                 backgroundImage: "url(https://airport.nridigital.com/airport/air_jun23/which_country_best_logistics_hub/461815/logistics_hub.960_0_1.jpg)",
             }}>
                 <div className="hero-overlay bg-opacity-90"></div>
-                <div className="hero-content pt-0 pb-0 flex-col lg:flex-row-reverse max-w-screen-lg">
+                <div className="hero-content pt-0 pb-4 flex-col lg:flex-row-reverse max-w-screen-lg">
                     <div className="text-center lg:text-left">
                         <h1 className="text-5xl font-bold hero-text">Login now!</h1>
                         <p className="py-2 hero-text">
@@ -50,7 +50,7 @@ function LandingPage() {
                     </div>
                 </div>
             </div>
-            <footer className="footer bg-neutral text-neutral-content p-10">
+                <footer className="footer bg-neutral text-neutral-content p-10">
                 <aside>
                     <h1>TruckersHub</h1>
                     <p>
