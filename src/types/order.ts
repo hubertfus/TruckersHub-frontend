@@ -31,4 +31,6 @@ export interface Order {
     estimated_delivery_time: string | null;
     created_at: string;
     updated_at: string;
+    driver_info: string; 
+    vehicle_info: string; 
 }

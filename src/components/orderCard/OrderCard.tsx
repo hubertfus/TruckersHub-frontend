@@ -13,7 +13,6 @@ function OrderCard(props: Order) {
     return (
         <>
             <div className="indicator">
-                {/* Status Indicator */}
                 {props.status === "in_progress" && (
                     <span className="indicator-item badge badge-primary right-2 top-2 p-1 h-fit">
                         <Truck />
@@ -70,10 +69,9 @@ function OrderCard(props: Order) {
                         </p>
                     </div>
 
-                    {/* Additional Info */}
                     <div className="text-sm text-secondary">
-                        <p>Driver: {props.assigned_driver || "Not Assigned"}</p>
-                        <p>Vehicle: {props.vehicle_id || "Not Assigned"}</p>
+                        <p>Driver: {props.driver_info || "Not Assigned"}</p>
+                        <p>Vehicle: {props.vehicle_info || "Not Assigned"}</p>
                         <p>
                             Estimated Delivery:{" "}
                             {props.estimated_delivery_time
@@ -87,7 +85,6 @@ function OrderCard(props: Order) {
                         <p>Updated: {new Date(props.updated_at).toLocaleString()}</p>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="flex gap-2 mt-4">
                         {props.status === "in_progress" && (
                             <button

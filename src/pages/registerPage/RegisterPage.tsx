@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Truck, Users } from 'lucide-react';
+import axios from 'axios';
 
 function RegisterPage() {
     const [role, setRole] = useState<'driver' | 'dispatcher'>('driver');
@@ -13,6 +14,10 @@ function RegisterPage() {
         license_number: '',
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [loading, setLoading] = useState(false);
+    const [registrationError, setRegistrationError] = useState<string | null>(null);
+
+    const navigate = useNavigate();  
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -52,19 +57,29 @@ function RegisterPage() {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const a = validateForm();
-        if (a) {
-            console.log({ ...formData, role });
+        setRegistrationError(null);
+        const isValid = validateForm();
+        if (isValid) {
+            try {
+                setLoading(true);
+                const response = await axios.post(`http://${import.meta.env.VITE_API_ADDRESS}/users/register`, { ...formData, role });
+                console.log("Registration successful:", response.data);
+                navigate('/');
+            } catch (error) {
+                console.error("Registration failed:", error);
+                setRegistrationError("Registration failed. Please try again.");
+            } finally {
+                setLoading(false);
+            }
         }
-        console.log(a)
     };
 
     return (
         <>
             <div className="hero min-h-screen bg-base-200" style={{
-                backgroundImage: "url(https://images.unsplash.com/photo-1519003722824-194d4455a60c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2575&q=80)",
+                backgroundImage: "url(/bgtruck.jpg)",
                 backgroundSize: 'cover',
             }}>
                 <div className="hero-overlay bg-opacity-90"></div>
@@ -188,8 +203,12 @@ function RegisterPage() {
                             </div>
 
                             <div className="form-control mt-6">
-                                <button type="submit" className="btn btn-primary">Register</button>
+                                <button type="submit" className={`btn btn-primary ${loading ? 'loading' : ''}`} disabled={loading}>
+                                    {loading ? 'Registering...' : 'Register'}
+                                </button>
                             </div>
+
+                            {registrationError && <div className="text-error mt-4">{registrationError}</div>}
 
                             <div className="text-center mt-2">
                                 Already have an account?{' '}
@@ -201,8 +220,6 @@ function RegisterPage() {
                     </div>
                 </div>
             </div>
-
-
         </>
     );
 }
