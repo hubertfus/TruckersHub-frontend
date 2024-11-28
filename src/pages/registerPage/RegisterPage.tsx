@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Truck, Users } from 'lucide-react';
 import axios from 'axios';
+import TextInput from '../../components/textInput/TextInput';
 
 function RegisterPage() {
     const [role, setRole] = useState<'driver' | 'dispatcher'>('driver');
@@ -110,97 +111,60 @@ function RegisterPage() {
 
                     <div className="card flex-shrink-0 w-full lg:w-1/2 shadow-2xl bg-base-100">
                         <form className="card-body" onSubmit={handleSubmit}>
-                            <div className="form-control">
-                                <label className="label">
-                                    <span className="label-text">Full Name</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    placeholder="John Doe"
-                                    className={`input input-bordered ${errors.name ? 'input-error' : ''}`}
-                                    value={formData.name}
-                                    onChange={handleInputChange}
-                                />
-                                {errors.name && <span className="text-error text-sm mt-1">{errors.name}</span>}
-                            </div>
-
-                            <div className="form-control">
-                                <label className="label">
-                                    <span className="label-text">Email</span>
-                                </label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    placeholder="email@example.com"
-                                    className={`input input-bordered ${errors.email ? 'input-error' : ''}`}
-                                    value={formData.email}
-                                    onChange={handleInputChange}
-                                />
-                                {errors.email && <span className="text-error text-sm mt-1">{errors.email}</span>}
-                            </div>
-
-                            <div className="form-control">
-                                <label className="label">
-                                    <span className="label-text">Phone Number</span>
-                                </label>
-                                <input
-                                    type="tel"
-                                    name="phone"
-                                    placeholder="+1 234 567 890"
-                                    className={`input input-bordered ${errors.phone ? 'input-error' : ''}`}
-                                    value={formData.phone}
-                                    onChange={handleInputChange}
-                                />
-                                {errors.phone && <span className="text-error text-sm mt-1">{errors.phone}</span>}
-                            </div>
-
-                            {role === 'driver' && (
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">Driver's License Number</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="license_number"
-                                        placeholder="DL12345678"
-                                        className={`input input-bordered ${errors.license_number ? 'input-error' : ''}`}
-                                        value={formData.license_number}
-                                        onChange={handleInputChange}
-                                    />
-                                    {errors.license_number && <span className="text-error text-sm mt-1">{errors.license_number}</span>}
-                                </div>
-                            )}
-
-                            <div className="form-control">
-                                <label className="label">
-                                    <span className="label-text">Password</span>
-                                </label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    placeholder="••••••••"
-                                    className={`input input-bordered ${errors.password ? 'input-error' : ''}`}
-                                    value={formData.password}
-                                    onChange={handleInputChange}
-                                />
-                                {errors.password && <span className="text-error text-sm mt-1">{errors.password}</span>}
-                            </div>
-
-                            <div className="form-control">
-                                <label className="label">
-                                    <span className="label-text">Confirm Password</span>
-                                </label>
-                                <input
-                                    type="password"
-                                    name="confirmPassword"
-                                    placeholder="••••••••"
-                                    className={`input input-bordered ${errors.confirmPassword ? 'input-error' : ''}`}
-                                    value={formData.confirmPassword}
-                                    onChange={handleInputChange}
-                                />
-                                {errors.confirmPassword && <span className="text-error text-sm mt-1">{errors.confirmPassword}</span>}
-                            </div>
+                        <TextInput
+                            label="Full Name"
+                            name="name"
+                            placeholder="John Doe"
+                            value={formData.name}
+                            onChange={handleInputChange}
+                            error={errors.name}
+                        />
+                        <TextInput
+                            label="Email"
+                            name="email"
+                            type="email"
+                            placeholder="email@example.com"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            error={errors.email}
+                        />
+                        <TextInput
+                            label="Phone Number"
+                            name="phone"
+                            type="tel"
+                            placeholder="+1 234 567 890"
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                            error={errors.phone}
+                        />
+                        {role === 'driver' && (
+                            <TextInput
+                                label="Driver's License Number"
+                                name="license_number"
+                                placeholder="DL12345678"
+                                value={formData.license_number}
+                                onChange={handleInputChange}
+                                error={errors.license_number}
+                            />
+                        )}
+                        <TextInput
+                            label="Password"
+                            name="password"
+                            type="password"
+                            placeholder="••••••••"
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            error={errors.password}
+                        />
+                        <TextInput
+                            label="Confirm Password" 
+                            name="confirmPassword"
+                            type="password"
+                            placeholder="••••••••"
+                            value={formData.confirmPassword}
+                            onChange={handleInputChange}
+                            error={errors.confirmPassword}
+                        />
 
                             <div className="form-control mt-6">
                                 <button type="submit" className={`btn btn-primary ${loading ? 'loading' : ''}`} disabled={loading}>

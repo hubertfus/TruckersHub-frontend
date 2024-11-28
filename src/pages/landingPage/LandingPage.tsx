@@ -3,29 +3,29 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./LandingPage.css";
 import { useUser } from "../../ctx/UserContext";
+import TextInput from "../../components/textInput/TextInput";
 
 function LandingPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
-    const { setUser, user } = useUser();  
+    const { setUser, user } = useUser();
 
     useEffect(() => {
-        console.log(user)
+        console.log(user);
         if (user?.role) navigate(`/${user.role}`);
     }, [user]);
-    
-    
+
     const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault(); 
-        setError(""); 
-    
+        event.preventDefault();
+        setError("");
+
         try {
             const response = await axios.post(`http://${import.meta.env.VITE_API_ADDRESS}/users/login`, { email, password });
             console.log("Login successful:", response.data);
-            setUser(response.data.user)
-            navigate(`/${response.data.user.role}`); 
+            setUser(response.data.user);
+            navigate(`/${response.data.user.role}`);
         } catch (err) {
             if (axios.isAxiosError(err)) {
                 console.error("Login failed:", err.response?.data?.message || err.message);
@@ -36,7 +36,6 @@ function LandingPage() {
             }
         }
     };
-    
 
     return (
         <>
@@ -58,50 +57,48 @@ function LandingPage() {
                     </div>
                     <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
                         <form className="card-body" onSubmit={handleLogin}>
-                            <div className="form-control">
-                                <label className="label">
-                                    <span className="label-text">Email</span>
+                            <TextInput
+                                label="Email"
+                                name="email"
+                                type="email"
+                                placeholder="Enter your email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                error={error && !password ? "Invalid email or password" : ""}
+                                required
+                            />
+
+                            <TextInput
+                                label="Password"
+                                name="password"
+                                type="password"
+                                placeholder="Enter your password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                error={error && password ? "Invalid email or password" : ""}
+                                required
+                            />
+
+                            <div className="flex flex-row justify-between items-end">
+                                <label className="label flex flex-col items-start">
+                                    Don’t have an account?
+                                    <Link to="/register" className="label-text-alt link link-hover text-blue-700">
+                                        Sign Up
+                                    </Link>
                                 </label>
-                                <input
-                                    type="email"
-                                    placeholder="email"
-                                    className="input input-bordered"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className="form-control">
                                 <label className="label">
-                                    <span className="label-text">Password</span>
+                                    <a href="#" className="label-text-alt link link-hover text-blue-700">
+                                        Forgot password?
+                                    </a>
                                 </label>
-                                <input
-                                    type="password"
-                                    placeholder="password"
-                                    className="input input-bordered"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                />
-                                <div className="flex flex-row justify-between items-end">
-                                    <label className="label flex flex-col items-start">
-                                        Don’t have an account?
-                                        <Link to="/register" className="label-text-alt link link-hover text-blue-700">
-                                            Sign Up
-                                        </Link>
-                                    </label>
-                                    <label className="label">
-                                        <a href="#" className="label-text-alt link link-hover text-blue-700">
-                                            Forgot password?
-                                        </a>
-                                    </label>
-                                </div>
                             </div>
+
                             {error && (
                                 <div className="text-red-600 text-sm py-2">
                                     {error}
                                 </div>
                             )}
+
                             <div className="form-control mt-6">
                                 <button className="btn btn-primary" type="submit">
                                     Login
