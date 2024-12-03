@@ -13,7 +13,6 @@ function LandingPage() {
     const { setUser, user } = useUser();
 
     useEffect(() => {
-        console.log(user);
         if (user?.role) navigate(`/${user.role}`);
     }, [user]);
 
@@ -23,7 +22,6 @@ function LandingPage() {
 
         try {
             const response = await axios.post(`http://${import.meta.env.VITE_API_ADDRESS}/users/login`, { email, password });
-            console.log("Login successful:", response.data);
             setUser(response.data.user);
             navigate(`/${response.data.user.role}`);
         } catch (err) {

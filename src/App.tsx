@@ -4,6 +4,7 @@ import RegisterPage from "./pages/registerPage/RegisterPage.tsx";
 import DriverViewPage from "./pages/DriverViewPage/DriverViewPage.tsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { UserProvider } from './ctx/UserContext';  
+import DispatcherViewPage from "./pages/dispatcherViewPage/DispatcherViewPage.tsx";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                         <Route path="/" element={<LandingPage />} />
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/driver" element={<DriverViewPage />} />
+                        <Route path="/dispatcher" element={<DispatcherViewPage />} />
                     </Routes>
                 </div>
             </Router>

@@ -39,7 +39,7 @@ function RegisterPage() {
         }
         if (!formData.phone.trim()) {
             newErrors.phone = 'Phone is required';
-        } else if (!/^\+?[\d\s-]{10,}$/.test(formData.phone)) {
+        } else if (!/^[0-9]{9}$/.test(formData.phone)) {
             newErrors.phone = 'Invalid phone number';
         }
         if (!formData.password) {
@@ -65,8 +65,7 @@ function RegisterPage() {
         if (isValid) {
             try {
                 setLoading(true);
-                const response = await axios.post(`http://${import.meta.env.VITE_API_ADDRESS}/users/register`, { ...formData, role });
-                console.log("Registration successful:", response.data);
+                await axios.post(`http://${import.meta.env.VITE_API_ADDRESS}/users/register`, { ...formData, role });
                 navigate('/');
             } catch (error) {
                 console.error("Registration failed:", error);

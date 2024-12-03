@@ -1,13 +1,38 @@
+import { User } from "../../ctx/UserContext.tsx";
 import { Order } from "../../types/order.ts";
-import { Truck, X, UserSearch, Check } from "lucide-react";
+import { Truck, X, UserSearch, Check, Trash2 } from "lucide-react";
 
-function OrderCard(props: Order) {
+type orderCardActions = "cancel" | "accept" | "complete" | "delete" | "assign";
+
+interface OrderCardProps extends Order {
+    role: Pick<User, "role">["role"];
+    onAction: (action: orderCardActions, value?: any) => void;
+}
+
+function OrderCard(props: OrderCardProps) {
     const handleCancel = () => {
-        console.log(`Order ${props.order_number} canceled.`);
+        console.log(`Order ${props.order_number} cancelled.`);
+        props.onAction("cancel", props._id);
+        
     };
 
     const handleAccept = () => {
         console.log(`Order ${props.order_number} accepted.`);
+        props.onAction("accept", props._id);
+    };
+
+    const handleAssignDriver = () => {
+        console.log(`Assigning driver for Order ${props.order_number}.`);
+    };
+
+    const handleMarkComplete = () => {
+        console.log(`Marking Order ${props.order_number} as complete.`);
+        props.onAction("complete",props._id);
+    };
+
+    const handleDelete = () => {
+        console.log(`Deleting Order ${props.order_number}.`);
+        props.onAction("delete",props._id)
     };
 
     return (
@@ -34,7 +59,7 @@ function OrderCard(props: Order) {
                     </span>
                 )}
 
-                <div className="bg-base-300 flex flex-col gap-3 p-4 rounded shadow-md w-80">
+                <div className="bg-base-300 flex flex-col gap-3 p-4 rounded shadow-md w-60">
                     <div className="text-lg font-semibold text-primary">
                         Order #{props.order_number}
                     </div>
@@ -59,6 +84,7 @@ function OrderCard(props: Order) {
                             {props.pickup_address.zip_code}, {props.pickup_address.country}
                         </p>
                     </div>
+
                     <div className="text-sm">
                         <p className="font-semibold">Delivery Address:</p>
                         <p>
@@ -85,22 +111,66 @@ function OrderCard(props: Order) {
                         <p>Updated: {new Date(props.updated_at).toLocaleString()}</p>
                     </div>
 
-                    <div className="flex gap-2 mt-4">
-                        {props.status === "in_progress" && (
-                            <button
-                                className="btn btn-error btn-sm"
-                                onClick={handleCancel}
-                            >
-                                Cancel Order
-                            </button>
+                    <div className="flex flex-row flex-wrap gap-2 mt-4">
+                        {props.role === "driver" && (
+                            <>
+                                {props.status === "in_progress" && (
+                                    <button
+                                        className="btn btn-error btn-sm"
+                                        onClick={handleCancel}
+                                    >
+                                        Cancel Order
+                                    </button>
+                                )}
+                                {props.status === "created" && (
+                                    <button
+                                        className="btn btn-success btn-sm"
+                                        onClick={handleAccept}
+                                    >
+                                        Accept Order
+                                    </button>
+                                )}
+                            </>
                         )}
-                        {props.status === "created" && (
-                            <button
-                                className="btn btn-success btn-sm"
-                                onClick={handleAccept}
-                            >
-                                Accept Order
-                            </button>
+
+                        {props.role === "dispatcher" && (
+                            <>
+                                {props.status === "created" && (
+                                    <button
+                                        className="btn btn-primary btn-sm"
+                                        onClick={handleAssignDriver}
+                                    >
+                                        Assign Driver
+                                    </button>
+                                )}
+                                {props.status === "in_progress" && (
+                                    <>
+                                        <button
+                                            className="btn btn-success btn-sm"
+                                            onClick={handleMarkComplete}
+                                        >
+                                            Mark as Complete
+                                        </button>
+                                        {props.vehicle_info === "Not Assigned" && (
+                                            <button
+                                                className="btn btn-warning btn-sm"
+                                                onClick={() =>
+                                                    props.onAction("assign", props._id)
+                                                }
+                                            >
+                                                Assign Vehicle
+                                            </button>
+                                        )}
+                                    </>
+                                )}
+                                <button
+                                    className="btn btn-error btn-sm"
+                                    onClick={handleDelete}
+                                >
+                                    <Trash2 className="mr-1" />
+                                    Delete Order
+                                </button>
+                            </>
                         )}
                     </div>
                 </div>
