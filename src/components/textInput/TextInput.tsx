@@ -5,7 +5,7 @@ interface TextInputProps {
     name: string;
     type?: string;
     placeholder?: string;
-    value: string;
+    value?: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     error?: string;
     required?: boolean;
@@ -22,7 +22,7 @@ const TextInput: React.FC<TextInputProps> = ({
     required = false,
 }) => {
     return (
-        <div className="form-control">
+        <div className="form-control flex-1">
             <label className="label">
                 <span className="label-text">
                     {label} {required && <span className="text-error">*</span>}
