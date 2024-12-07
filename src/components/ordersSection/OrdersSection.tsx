@@ -117,6 +117,23 @@ function OrdersSection() {
             }
             return;
         }
+        if (action==="assign"){
+            try{
+                const {data} = await axios.post(`http://${import.meta.env.VITE_API_ADDRESS}/orders/assign-driver`,{
+                    orderId: value.orderId,
+                    driverId: value.driverId,
+                    dispatcherId: user?.id
+        
+                })
+                console.log(data.order)
+                setData((prev: Order[]) =>
+                    prev.map((order) =>
+                        order._id === value.orderId ? data.order : order
+                    )                );
+            }catch(error){
+                console.error(error)
+            }
+        }
     }
 
     const handleSubmit = async () => {
@@ -178,7 +195,7 @@ function OrdersSection() {
                 orders={filteredOrders(activeTab)}
                 onAction={handleAction}
             />
-            <div className="absolute bottom-4 right-4">
+            <div className="fixed bottom-4 right-4">
                 <button
                     className="btn btn-neutral btn-xs sm:btn-sm md:btn-md lg:btn-lg"
                     onClick={() => {

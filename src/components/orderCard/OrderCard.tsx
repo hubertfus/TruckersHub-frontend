@@ -1,6 +1,10 @@
 import { User } from "../../ctx/UserContext.tsx";
 import { Order } from "../../types/order.ts";
 import { Truck, X, UserSearch, Check, Trash2 } from "lucide-react";
+import Dialog from "../dialog/Dialog.tsx";
+import DriverList from "../driverList/DriverList.tsx";
+import axios from "axios";
+import { useState } from "react";
 
 type orderCardActions = "cancel" | "accept" | "complete" | "delete" | "assign";
 
@@ -10,6 +14,19 @@ interface OrderCardProps extends Order {
 }
 
 function OrderCard(props: OrderCardProps) {
+    const [drivers, setDrivers] = useState<any[]>([])
+
+
+    const handleAssignDriver = async (driverId:string) => {
+        props.onAction("assign", {driverId: driverId, orderId: props._id})
+        const dialog = document.getElementById("assignDriver");
+        if (dialog && dialog instanceof HTMLDialogElement) {
+            dialog.close();
+            const {data} = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/users?available=true`)
+            setDrivers(data)
+        }
+    }
+
     const handleCancel = () => {
         console.log(`Order ${props.order_number} cancelled.`);
         props.onAction("cancel", props._id);
@@ -21,8 +38,14 @@ function OrderCard(props: OrderCardProps) {
         props.onAction("accept", props._id);
     };
 
-    const handleAssignDriver = () => {
+    const handleAssignDriverModal = async () => {
         console.log(`Assigning driver for Order ${props.order_number}.`);
+        const dialog = document.getElementById("assignDriver");
+        if (dialog && dialog instanceof HTMLDialogElement) {
+            dialog.showModal();
+            const {data} = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/users?available=true`)
+            setDrivers(data)
+        }
     };
 
     const handleMarkComplete = () => {
@@ -111,12 +134,12 @@ function OrderCard(props: OrderCardProps) {
                         <p>Updated: {new Date(props.updated_at).toLocaleString()}</p>
                     </div>
 
-                    <div className="flex flex-row flex-wrap gap-2 mt-4">
+                    <div className="flex flex-row flex-wrap gap-2 mt-4 bottom-0 ">
                         {props.role === "driver" && (
                             <>
                                 {props.status === "in_progress" && (
                                     <button
-                                        className="btn btn-error btn-sm"
+                                        className="btn btn-error btn-sm w-full"
                                         onClick={handleCancel}
                                     >
                                         Cancel Order
@@ -124,7 +147,7 @@ function OrderCard(props: OrderCardProps) {
                                 )}
                                 {props.status === "created" && (
                                     <button
-                                        className="btn btn-success btn-sm"
+                                        className="btn btn-success btn-sm w-full"
                                         onClick={handleAccept}
                                     >
                                         Accept Order
@@ -137,8 +160,8 @@ function OrderCard(props: OrderCardProps) {
                             <>
                                 {props.status === "created" && (
                                     <button
-                                        className="btn btn-primary btn-sm"
-                                        onClick={handleAssignDriver}
+                                        className="btn btn-primary btn-sm w-full" 
+                                        onClick={handleAssignDriverModal}
                                     >
                                         Assign Driver
                                     </button>
@@ -146,14 +169,14 @@ function OrderCard(props: OrderCardProps) {
                                 {props.status === "in_progress" && (
                                     <>
                                         <button
-                                            className="btn btn-success btn-sm"
+                                            className="btn btn-success btn-sm w-full"
                                             onClick={handleMarkComplete}
                                         >
                                             Mark as Complete
                                         </button>
                                         {props.vehicle_info === "Not Assigned" && (
                                             <button
-                                                className="btn btn-warning btn-sm"
+                                                className="btn btn-warning btn-sm w-full"
                                                 onClick={() =>
                                                     props.onAction("assign", props._id)
                                                 }
@@ -164,7 +187,7 @@ function OrderCard(props: OrderCardProps) {
                                     </>
                                 )}
                                 <button
-                                    className="btn btn-error btn-sm"
+                                    className="btn btn-error btn-sm w-full"
                                     onClick={handleDelete}
                                 >
                                     <Trash2 className="mr-1" />
@@ -175,6 +198,9 @@ function OrderCard(props: OrderCardProps) {
                     </div>
                 </div>
             </div>
+            <Dialog title="Assign driver" id="assignDriver">
+                <DriverList drivers={drivers} onSelect={handleAssignDriver}/>
+            </Dialog>
         </>
     );
 }

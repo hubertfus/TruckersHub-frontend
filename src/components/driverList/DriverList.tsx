@@ -1,5 +1,5 @@
 
-function DriverList({ drivers }: { drivers: any[] }) {
+function DriverList({ drivers, onSelect }: { drivers: any[], onSelect?:(userId:string)=> void }) {
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-3xl font-semibold mb-6 text-center">Driver List</h1>
@@ -7,7 +7,8 @@ function DriverList({ drivers }: { drivers: any[] }) {
                 {drivers.map((driver) => (
                     <div 
                         key={driver._id} 
-                        className="card bg-base-100 shadow-lg border border-gray-200 p-6 flex flex-col items-center justify-between space-y-4 transition-transform hover:scale-105"
+                        className="card cursor-pointer bg-base-100 shadow-lg border border-gray-200 p-6 flex flex-col items-center justify-between space-y-4 transition-transform hover:scale-105"
+                        onClick={()=>onSelect && onSelect(driver._id)}
                     >
                         <div className="w-20 h-20   rounded-full flex items-center justify-center text-xl font-bold text-white bg-blue-500">
                             {driver.name.split(" ").map((namePart: string) => namePart[0]).join("")}
