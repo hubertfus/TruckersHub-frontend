@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Check, User, AlertCircle } from "lucide-react";
 import axios from "axios";
 import Tabs from "../tabs/Tabs";
-import DriverList from "../driverList/DriverList";
+import DriverList from "../driversList/DriversList";
 
 function DriversSection() {
     const [activeTab, setActiveTab] = useState<string>("all");

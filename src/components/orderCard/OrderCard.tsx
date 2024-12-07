@@ -1,208 +1,136 @@
 import { User } from "../../ctx/UserContext.tsx";
 import { Order } from "../../types/order.ts";
-import { Truck, X, UserSearch, Check, Trash2 } from "lucide-react";
+import { Truck, X, UserSearch, Check } from "lucide-react";
 import Dialog from "../dialog/Dialog.tsx";
-import DriverList from "../driverList/DriverList.tsx";
+import DriverList from "../driversList/DriversList.tsx";
+import VehiclesList from "../vehiclesList/VehiclesList.tsx";
+import { useRef, useState } from "react";
 import axios from "axios";
-import { useState } from "react";
+import LoadDetails from "./LoadDetails.tsx";
+import AddressDetails from "./AddressDetails.tsx";
+import OrderSummary from "./OrderSummary.tsx";
+import ActionButtons from "./ActionButtons.tsx";
+import EditOrderDialog from "../dialog/EditOrderDialog.tsx";
 
-type orderCardActions = "cancel" | "accept" | "complete" | "delete" | "assign";
+export type orderCardActions = "cancel" | "accept" | "complete" | "delete" | "assignDriver" | "assignVehicle" | "editOrder";
 
-interface OrderCardProps extends Order {
-    role: Pick<User, "role">["role"];
-    onAction: (action: orderCardActions, value?: any) => void;
+interface OrderCardProps {
+  order: Order; 
+  role: Pick<User, "role">["role"];
+  onAction: (action: orderCardActions, value?: any) => void;
 }
 
+
 function OrderCard(props: OrderCardProps) {
-    const [drivers, setDrivers] = useState<any[]>([])
+  const [drivers, setDrivers] = useState<any[]>([]);
+  const [vehicles, setVehicles] = useState<any[]>([]);
 
+  const driverDialogRef = useRef<HTMLDialogElement>(null);
+  const vehicleDialogRef = useRef<HTMLDialogElement>(null);
+  const editDialogRef = useRef<HTMLDialogElement>(null);
 
-    const handleAssignDriver = async (driverId:string) => {
-        props.onAction("assign", {driverId: driverId, orderId: props._id})
-        const dialog = document.getElementById("assignDriver");
-        if (dialog && dialog instanceof HTMLDialogElement) {
-            dialog.close();
-            const {data} = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/users?available=true`)
-            setDrivers(data)
-        }
+  const statusIcons = {
+    in_progress: <Truck />,
+    cancelled: <X />,
+    created: <UserSearch />,
+    completed: <Check />,
+  };
+
+  const statusClass = {
+    in_progress: "badge-primary",
+    cancelled: "badge-error",
+    created: "badge-info",
+    completed: "badge-success",
+  };
+
+  const handleShowModalWithData = async (dialogRef: React.RefObject<HTMLDialogElement>, fetchUrl: string, setData: (data: any[]) => void) => {
+    if (dialogRef.current) {
+      dialogRef.current.showModal();
+      const { data } = await axios.get(fetchUrl);
+      setData(data);
     }
+  };
 
-    const handleCancel = () => {
-        console.log(`Order ${props.order_number} cancelled.`);
-        props.onAction("cancel", props._id);
-        
-    };
+  return (
+    <>
+      <div className="indicator">
+        <span className={`indicator-item badge ${statusClass[props.order.status]} right-2 top-2 p-1 h-fit`}>
+          {statusIcons[props.order.status]}
+        </span>
 
-    const handleAccept = () => {
-        console.log(`Order ${props.order_number} accepted.`);
-        props.onAction("accept", props._id);
-    };
+        <div className="bg-base-300 flex flex-col gap-3 p-4 rounded shadow-md w-60">
+          <div className="text-lg font-semibold text-primary">
+            Order #{props.order.order_number}
+          </div>
+          <LoadDetails
+            type={props.order.load_details.type}
+            weight={props.order.load_details.weight}
+            dimensions={props.order.load_details.dimensions}
+          />
+          <AddressDetails
+            title="Pickup Address"
+            address={props.order.pickup_address}
+          />
+          <AddressDetails
+            title="Delivery Address"
+            address={props.order.delivery_address}
+          />
+          <OrderSummary
+            driverInfo={props.order.driver_info}
+            vehicleInfo={props.order.vehicle_info}
+            estimatedDeliveryTime={props.order.estimated_delivery_time}
+          />
+          <ActionButtons
+            role={props.role}
+            order={props.order}
+            onAction={props.onAction}
+            handleAssignDriverModal={() =>
+              handleShowModalWithData(
+                driverDialogRef,
+                `http://${import.meta.env.VITE_API_ADDRESS}/users?available=true`,
+                setDrivers
+              )
+            }
+            handleAssignVehicleModal={() =>
+              handleShowModalWithData(
+                vehicleDialogRef,
+                `http://${import.meta.env.VITE_API_ADDRESS}/vehicles?available=true`,
+                setVehicles
+              )
+            }
+            handleEditModal={() =>
+              handleShowModalWithData(editDialogRef, "", () => {})
+            }
+          />
+        </div>
+      </div>
 
-    const handleAssignDriverModal = async () => {
-        console.log(`Assigning driver for Order ${props.order_number}.`);
-        const dialog = document.getElementById("assignDriver");
-        if (dialog && dialog instanceof HTMLDialogElement) {
-            dialog.showModal();
-            const {data} = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/users?available=true`)
-            setDrivers(data)
-        }
-    };
+      <Dialog id="assignDriverDialog" title="Assign Driver" ref={driverDialogRef}>
+        <DriverList
+          drivers={drivers}
+          onSelect={(driverId) =>
+            props.onAction("assignDriver", { driverId, orderId: props.order._id })
+          }
+        />
+      </Dialog>
 
-    const handleMarkComplete = () => {
-        console.log(`Marking Order ${props.order_number} as complete.`);
-        props.onAction("complete",props._id);
-    };
+      <Dialog id="assignVehicleDialog" title="Assign Vehicle" ref={vehicleDialogRef}>
+        <VehiclesList
+          vehicles={vehicles}
+          onSelect={(vehicleId) =>
+            props.onAction("assignVehicle", { vehicleId, orderId: props.order._id })
+          }
+        />
+      </Dialog>
 
-    const handleDelete = () => {
-        console.log(`Deleting Order ${props.order_number}.`);
-        props.onAction("delete",props._id)
-    };
-
-    return (
-        <>
-            <div className="indicator">
-                {props.status === "in_progress" && (
-                    <span className="indicator-item badge badge-primary right-2 top-2 p-1 h-fit">
-                        <Truck />
-                    </span>
-                )}
-                {props.status === "cancelled" && (
-                    <span className="indicator-item badge badge-error right-2 top-2 p-1 h-fit">
-                        <X />
-                    </span>
-                )}
-                {props.status === "created" && (
-                    <span className="indicator-item badge badge-info right-2 top-2 p-1 h-fit">
-                        <UserSearch />
-                    </span>
-                )}
-                {props.status === "completed" && (
-                    <span className="indicator-item badge badge-success right-2 top-2 p-1 h-fit">
-                        <Check />
-                    </span>
-                )}
-
-                <div className="bg-base-300 flex flex-col gap-3 p-4 rounded shadow-md w-60">
-                    <div className="text-lg font-semibold text-primary">
-                        Order #{props.order_number}
-                    </div>
-
-                    <div className="text-sm">
-                        <p className="font-semibold">Load Details:</p>
-                        <p>Type: {props.load_details.type}</p>
-                        <p>
-                            Dimensions: {props.load_details.dimensions.length} x{" "}
-                            {props.load_details.dimensions.width} x{" "}
-                            {props.load_details.dimensions.height} cm
-                        </p>
-                        <p>Weight: {props.load_details.weight} kg</p>
-                    </div>
-
-                    <div className="text-sm">
-                        <p className="font-semibold">Pickup Address:</p>
-                        <p>
-                            {props.pickup_address.street}, {props.pickup_address.city}
-                        </p>
-                        <p>
-                            {props.pickup_address.zip_code}, {props.pickup_address.country}
-                        </p>
-                    </div>
-
-                    <div className="text-sm">
-                        <p className="font-semibold">Delivery Address:</p>
-                        <p>
-                            {props.delivery_address.street}, {props.delivery_address.city}
-                        </p>
-                        <p>
-                            {props.delivery_address.zip_code}, {props.delivery_address.country}
-                        </p>
-                    </div>
-
-                    <div className="text-sm text-secondary">
-                        <p>Driver: {props.driver_info || "Not Assigned"}</p>
-                        <p>Vehicle: {props.vehicle_info || "Not Assigned"}</p>
-                        <p>
-                            Estimated Delivery:{" "}
-                            {props.estimated_delivery_time
-                                ? new Date(props.estimated_delivery_time).toLocaleString()
-                                : "N/A"}
-                        </p>
-                    </div>
-
-                    <div className="text-xs text-gray-500">
-                        <p>Created: {new Date(props.created_at).toLocaleString()}</p>
-                        <p>Updated: {new Date(props.updated_at).toLocaleString()}</p>
-                    </div>
-
-                    <div className="flex flex-row flex-wrap gap-2 mt-4 bottom-0 ">
-                        {props.role === "driver" && (
-                            <>
-                                {props.status === "in_progress" && (
-                                    <button
-                                        className="btn btn-error btn-sm w-full"
-                                        onClick={handleCancel}
-                                    >
-                                        Cancel Order
-                                    </button>
-                                )}
-                                {props.status === "created" && (
-                                    <button
-                                        className="btn btn-success btn-sm w-full"
-                                        onClick={handleAccept}
-                                    >
-                                        Accept Order
-                                    </button>
-                                )}
-                            </>
-                        )}
-
-                        {props.role === "dispatcher" && (
-                            <>
-                                {props.status === "created" && (
-                                    <button
-                                        className="btn btn-primary btn-sm w-full" 
-                                        onClick={handleAssignDriverModal}
-                                    >
-                                        Assign Driver
-                                    </button>
-                                )}
-                                {props.status === "in_progress" && (
-                                    <>
-                                        <button
-                                            className="btn btn-success btn-sm w-full"
-                                            onClick={handleMarkComplete}
-                                        >
-                                            Mark as Complete
-                                        </button>
-                                        {props.vehicle_info === "Not Assigned" && (
-                                            <button
-                                                className="btn btn-warning btn-sm w-full"
-                                                onClick={() =>
-                                                    props.onAction("assign", props._id)
-                                                }
-                                            >
-                                                Assign Vehicle
-                                            </button>
-                                        )}
-                                    </>
-                                )}
-                                <button
-                                    className="btn btn-error btn-sm w-full"
-                                    onClick={handleDelete}
-                                >
-                                    <Trash2 className="mr-1" />
-                                    Delete Order
-                                </button>
-                            </>
-                        )}
-                    </div>
-                </div>
-            </div>
-            <Dialog title="Assign driver" id="assignDriver">
-                <DriverList drivers={drivers} onSelect={handleAssignDriver}/>
-            </Dialog>
-        </>
-    );
+      <EditOrderDialog
+        order={props.order}
+        onAction={props.onAction}
+        closeDialog={() => editDialogRef.current?.close()}
+        ref={editDialogRef}
+      />
+    </>
+  );
 }
 
 export default OrderCard;

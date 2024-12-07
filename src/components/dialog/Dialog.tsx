@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useEffect, useRef, forwardRef } from 'react';
 
 interface DialogProps {
-  id: string; 
-  children?: React.ReactNode; 
+  id: string;
+  children?: React.ReactNode;
   className?: string;
   size?: string;
-  title?: string; 
-  closeText?: string; 
-  acceptText?: string; 
-  onAccept?: ()=> void;
+  title?: string;
+  closeText?: string;
+  acceptText?: string;
+  isOpen?: boolean;
+  onAccept?: () => void;
+  onClose?: () => void;
 }
 
-const Dialog: React.FC<DialogProps> = ({
+const Dialog = forwardRef<HTMLDialogElement, DialogProps>(({
   id,
   children,
   className = '',
@@ -19,23 +21,48 @@ const Dialog: React.FC<DialogProps> = ({
   title = 'Dialog',
   closeText = 'Close',
   acceptText,
-  onAccept
-}) => {
+  isOpen = false,
+  onAccept,
+  onClose
+}, ref) => {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      dialogRef.current?.showModal();
+    } else {
+      dialogRef.current?.close();
+    }
+  }, [isOpen]);
+
+  const handleAccept = () => {
+    if (onAccept) onAccept();
+    dialogRef.current?.close();
+  };
+
+  const handleClose = () => {
+    if (onClose) onClose();
+    if (ref && typeof ref !== 'function') {
+      (ref as React.RefObject<HTMLDialogElement>).current?.close();
+    } else {
+      dialogRef.current?.close();
+    }
+  };
+
   return (
-    <dialog id={id} className={`modal ${className}`}>
+    <dialog id={id} ref={ref || dialogRef} className={`modal ${className}`}>
       <div className={`modal-box w-11/12 ${size}`}>
         {title && <h3 className="font-bold text-lg">{title}</h3>}
-        
-        <form className="modal-action flex-col" method="dialog">
-          <div className="py-4">{children}</div>
-          <div className='flex flex-row gap-4 justify-end'>
-            <button className="btn btn-error">{closeText}</button>
-            {acceptText && <button className="btn btn-success" onClick={onAccept}>{acceptText}</button>}
-          </div>
-        </form>
+        <div className="py-4">{children}</div>
+        <div className="modal-action flex-row gap-4 justify-end">
+          <button className="btn btn-error" onClick={handleClose}>{closeText}</button>
+          {acceptText && <button className="btn btn-success" onClick={handleAccept}>{acceptText}</button>}
+        </div>
       </div>
     </dialog>
   );
-};
+});
+
+Dialog.displayName = 'Dialog';
 
 export default Dialog;
