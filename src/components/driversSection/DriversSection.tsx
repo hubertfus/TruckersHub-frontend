@@ -42,10 +42,34 @@ function DriversSection() {
         return <p className="text-red-500">Error fetching drivers: {error}</p>;
     }
 
+    const handleAction = async (action: string, value?: any) =>{
+        if(action==="edit"){
+            if(action==="edit"){
+                try {
+                    console.log(value)
+                   await axios.put(
+                        `http://${import.meta.env.VITE_API_ADDRESS}/users/edit/${value.driverId}`,{
+                            ...value.editedDriver
+                        }
+                    );
+                    setData((prev:any) =>
+                        prev.map((driver:any)=> driver._id===value.driverId ?{...driver, email:value.editedDriver.email,
+                            license_number: value.editedDriver.license_number, name: value.editedDriver.name, 
+                            phone: value.editedDriver.phone
+                        }: driver )
+                      );
+                } catch (error) {
+                    console.error("Error while deleting vehicle:", error);
+                }   
+                return;
+            }
+        }
+    }
+
     return (
         <div>
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
-            <DriverList drivers={filteredDrivers(activeTab)} />
+            <DriverList drivers={filteredDrivers(activeTab)} onAction={handleAction}/>
         </div>
     );
 }

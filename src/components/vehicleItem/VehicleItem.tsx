@@ -111,7 +111,7 @@ const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) =>
             <Edit className="w-4 h-4 mr-1" />
             Edit
           </button>
-          <button className="btn btn-success btn-sm"
+          {!vehicle.isInUse && <button className="btn btn-success btn-sm"
           onClick={async () => {
             const dialog = document.getElementById("assignToOrder");
             if (dialog && dialog instanceof HTMLDialogElement) {
@@ -127,7 +127,7 @@ const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) =>
         }}>
             <CheckCircle className="w-4 h-4 mr-1" />
             Assign to Order
-          </button>
+          </button>}
           <button
             className="btn btn-error btn-sm"
             onClick={() => onAction && onAction("delete", vehicle._id)}
