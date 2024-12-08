@@ -9,6 +9,8 @@ interface TextInputProps {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     error?: string;
     required?: boolean;
+    min?: number;
+    max?: number;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -20,6 +22,8 @@ const TextInput: React.FC<TextInputProps> = ({
     onChange,
     error,
     required = false,
+    min,
+    max
 }) => {
     return (
         <div className="form-control flex-1">
@@ -35,6 +39,8 @@ const TextInput: React.FC<TextInputProps> = ({
                 className={`input input-bordered ${error ? 'input-error' : ''}`}
                 value={value}
                 onChange={onChange}
+                min={min}
+                max={max}
             />
             {error && <span className="text-error text-sm mt-1">{error}</span>}
         </div>

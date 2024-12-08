@@ -112,7 +112,6 @@ function OrdersSection() {
                              assigned_driver: data.order.assigned_driver, driver_info: data.order.driver_info } : order
                     )
                 );
-                console.log(data);
                 
                 const dialog = document.getElementById("assignDriverDialog");
                 if (dialog && dialog instanceof HTMLDialogElement) {
@@ -129,14 +128,13 @@ function OrdersSection() {
                     `http://${import.meta.env.VITE_API_ADDRESS}/orders/assign-vehicle`,
                     { orderId: value.orderId, vehicleId: value.vehicleId, dispatcherId: user?.id }
                 );
-                console.log(data);
 
                 setData((prev: Order[]) =>
                     prev.map((order) =>
                         order._id === value.orderId ? { ...order, vehicle_info: data.order.vehicle_info, vehicle_id: data.order.vehicle_id } : order
                     )
                 );
-                
+
                 const dialog = document.getElementById("assignVehicleDialog");
                 if (dialog && dialog instanceof HTMLDialogElement) {
                     dialog.close();
@@ -227,7 +225,7 @@ function OrdersSection() {
                 <button
                     className="btn btn-neutral btn-xs sm:btn-sm md:btn-md lg:btn-lg"
                     onClick={() => {
-                        const dialog = document.getElementById("order");
+                        const dialog = document.getElementById("createOrder");
                         if (dialog && dialog instanceof HTMLDialogElement) {
                             dialog.showModal();
                         }
@@ -238,7 +236,7 @@ function OrdersSection() {
             </div>
 
             <Dialog
-                id="order"
+                id="createOrder"
                 title="Create Order"
                 acceptText="Accept"
                 closeText="Cancel"

@@ -4,6 +4,7 @@ function DriversList({
 }: {
   drivers: any[];
   onSelect?: (userId: string) => void;
+  onAction?: (action: string, value?: any) => void;
 }) {
   return (
     <div className="container mx-auto p-4">
