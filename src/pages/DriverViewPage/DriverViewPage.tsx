@@ -97,7 +97,7 @@ function DispatcherViewPage() {
 
             <div className="flex flex-wrap flex-row gap-5 justify-center pt-16 p-4">
                 {filteredOrders(activeTab).map((order) => (
-                    <OrderCard key={order._id} {...order} role={"driver"} onAction={handleAction}/>
+                    <OrderCard key={order._id} order={order} role={"driver"} onAction={handleAction} />
                 ))}
                 {filteredOrders(activeTab).length === 0 && (
                     <p className="text-gray-500">No orders available for this category.</p>

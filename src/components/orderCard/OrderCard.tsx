@@ -12,7 +12,7 @@ import OrderSummary from "./OrderSummary.tsx";
 import ActionButtons from "./ActionButtons.tsx";
 import EditOrderDialog from "../dialog/EditOrderDialog.tsx";
 
-export type orderCardActions = "cancel" | "accept" | "complete" | "delete" | "assignDriver" | "assignVehicle" | "editOrder" | "changeDriver" | "changeVehicle";
+export type orderCardActions = "click" | "cancel" | "accept" | "complete" | "delete" | "assignDriver" | "assignVehicle" | "editOrder" | "changeDriver" | "changeVehicle";
 
 interface OrderCardProps {
   order: Order; 
@@ -67,7 +67,7 @@ function OrderCard(props: OrderCardProps) {
           {statusIcons[props.order.status]}
         </span>
 
-        <div className="bg-base-300 flex flex-col gap-3 p-4 rounded shadow-md w-60">
+        <div className="bg-base-300 flex flex-col gap-3 p-4 rounded shadow-md w-60" onClick={()=>props.onAction("click",props.order._id)}>
           <div className="text-lg font-semibold text-primary">
             Order #{props.order.order_number}
           </div>

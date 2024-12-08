@@ -220,7 +220,7 @@ function OrdersSection() {
     return (
         <div className="overflow-hidden">
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
-            <OrderList orders={filteredOrders(activeTab)} onAction={handleAction} />
+            <OrderList orders={filteredOrders(activeTab)} onAction={handleAction} role="dispatcher" />
             <div className="fixed bottom-4 right-4">
                 <button
                     className="btn btn-neutral btn-xs sm:btn-sm md:btn-md lg:btn-lg"

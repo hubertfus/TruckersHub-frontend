@@ -3,6 +3,9 @@ import { Vehicle } from "../../types/vehicle";
 import { CheckCircle, Edit, Trash2, Truck } from "lucide-react";
 import Dialog from "../dialog/Dialog";
 import TextInput from "../textInput/TextInput";
+import { Order } from "../../types/order";
+import axios from "axios";
+import OrderList from "../orderList/OrderList";
 
 
 interface VehicleItemProps {
@@ -15,6 +18,7 @@ interface VehicleItemProps {
 const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) => {
   const [editedVehicle, setEditedVehicle] = useState<Vehicle>(vehicle);
   const [dialogError, setDialogError] = useState<string | null>(null);
+  const [orders, setOrders] = useState<Order[]>([])
 
   const handleInputChange = (field: keyof Vehicle, value: string) => {
     setEditedVehicle((prev) => ({
@@ -55,6 +59,12 @@ const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) =>
     onAction && onAction("edit",{vehicleId: vehicle._id, editedVehicle});
     setDialogError(null);
   };
+
+  const handleAction = async (action: string, value?: any) =>{
+    if(action==="click"){
+      onAction && onAction("assignToOrder",{orderId:value, vehicleId:vehicle._id})
+    }
+  }
 
   return (
     <li
@@ -101,7 +111,20 @@ const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) =>
             <Edit className="w-4 h-4 mr-1" />
             Edit
           </button>
-          <button className="btn btn-success btn-sm">
+          <button className="btn btn-success btn-sm"
+          onClick={async () => {
+            const dialog = document.getElementById("assignToOrder");
+            if (dialog && dialog instanceof HTMLDialogElement) {
+                dialog.showModal();
+                try {
+                  const {data} = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/orders`);
+                  console.log(data)
+                  setOrders(data);
+              } catch (error: any) {
+                  console.error("Error fetching orders:", error);
+              }
+            }
+        }}>
             <CheckCircle className="w-4 h-4 mr-1" />
             Assign to Order
           </button>
@@ -116,117 +139,124 @@ const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) =>
       )}
 
 
-        <Dialog
-          id="editVehicle"
-          title="Edit Vehicle"
-          acceptText="Save"
-          closeText="Cancel"
-          onAccept={handleSave}
-        >
-          <TextInput
-            label="License Plate"
-            name="license_plate"
-            placeholder="Enter license plate"
-            value={editedVehicle.license_plate}
-            onChange={(e) => handleInputChange("license_plate", e.target.value)}
-            required
-          />
-          <TextInput
-            label="Model"
-            name="model"
-            placeholder="Enter vehicle model"
-            value={editedVehicle.model}
-            onChange={(e) => handleInputChange("model", e.target.value)}
-            required
-          />
-          <TextInput
-            label="Brand"
-            name="brand"
-            placeholder="Enter vehicle brand"
-            value={editedVehicle.brand}
-            onChange={(e) => handleInputChange("brand", e.target.value)}
-            required
-          />
-          <TextInput
-            label="Year"
-            name="year"
-            placeholder="Enter manufacturing year"
-            type="number"
-            value={editedVehicle.year}
-            onChange={(e) => handleInputChange("year", e.target.value)}
-            min={1900}
-          />
-          <h2 className="font-bold text-center pt-8">Capacity:</h2>
-          <TextInput
-            label="Weight Capacity"
-            name="weight"
-            placeholder="Enter weight capacity"
-            type="number"
-            value={editedVehicle.capacity?.weight || ""}
-            onChange={(e) => handleNestedChange("capacity", "weight", e.target.value)}
-            min={0}
-          />
-          <TextInput
-            label="Length (Volume)"
-            name="length"
-            placeholder="Enter length"
-            type="number"
-            value={editedVehicle.capacity?.volume?.length || ""}
-            onChange={(e) =>
-              handleNestedChange("capacity", "volume", {
-                ...editedVehicle.capacity.volume,
-                length: e.target.value,
-              })
-            }
-            min={0}
-          />
-          <TextInput
-            label="Width (Volume)"
-            name="width"
-            placeholder="Enter width"
-            type="number"
-            value={editedVehicle.capacity?.volume?.width || ""}
-            onChange={(e) =>
-              handleNestedChange("capacity", "volume", {
-                ...editedVehicle.capacity.volume,
-                width: e.target.value,
-              })
-            }
-            min={0}
-          />
-          <TextInput
-            label="Height (Volume)"
-            name="height"
-            placeholder="Enter height"
-            type="number"
-            value={editedVehicle.capacity?.volume?.height || ""}
-            onChange={(e) =>
-              handleNestedChange("capacity", "volume", {
-                ...editedVehicle.capacity.volume,
-                height: e.target.value,
-              })
-            }
-            min={0}
-          />
-          <h2 className="font-bold text-center pt-8">Location:</h2>
-          <TextInput
-            label="Latitude"
-            name="latitude"
-            placeholder="Enter latitude"
-            type="number"
-            value={editedVehicle.current_location?.latitude || ""}
-            onChange={(e) => handleNestedChange("current_location", "latitude", e.target.value)}
-          />
-          <TextInput
-            label="Longitude"
-            name="longitude"
-            placeholder="Enter longitude"
-            type="number"
-            value={editedVehicle.current_location?.longitude || ""}
-            onChange={(e) => handleNestedChange("current_location", "longitude", e.target.value)}
-          />
-          {dialogError && <p className="text-red-500 mt-2">{dialogError}</p>}
-        </Dialog>
+      <Dialog
+        id="assignToOrder"
+        title="Assign to order"
+        closeText="Cancel">
+          <OrderList orders={orders} onAction={handleAction} role=""/>
+      </Dialog>
+
+      <Dialog
+        id="editVehicle"
+        title="Edit Vehicle"
+        acceptText="Save"
+        closeText="Cancel"
+        onAccept={handleSave}
+      >
+        <TextInput
+          label="License Plate"
+          name="license_plate"
+          placeholder="Enter license plate"
+          value={editedVehicle.license_plate}
+          onChange={(e) => handleInputChange("license_plate", e.target.value)}
+          required
+        />
+        <TextInput
+          label="Model"
+          name="model"
+          placeholder="Enter vehicle model"
+          value={editedVehicle.model}
+          onChange={(e) => handleInputChange("model", e.target.value)}
+          required
+        />
+        <TextInput
+          label="Brand"
+          name="brand"
+          placeholder="Enter vehicle brand"
+          value={editedVehicle.brand}
+          onChange={(e) => handleInputChange("brand", e.target.value)}
+          required
+        />
+        <TextInput
+          label="Year"
+          name="year"
+          placeholder="Enter manufacturing year"
+          type="number"
+          value={editedVehicle.year}
+          onChange={(e) => handleInputChange("year", e.target.value)}
+          min={1900}
+        />
+        <h2 className="font-bold text-center pt-8">Capacity:</h2>
+        <TextInput
+          label="Weight Capacity"
+          name="weight"
+          placeholder="Enter weight capacity"
+          type="number"
+          value={editedVehicle.capacity?.weight || ""}
+          onChange={(e) => handleNestedChange("capacity", "weight", e.target.value)}
+          min={0}
+        />
+        <TextInput
+          label="Length (Volume)"
+          name="length"
+          placeholder="Enter length"
+          type="number"
+          value={editedVehicle.capacity?.volume?.length || ""}
+          onChange={(e) =>
+            handleNestedChange("capacity", "volume", {
+              ...editedVehicle.capacity.volume,
+              length: e.target.value,
+            })
+          }
+          min={0}
+        />
+        <TextInput
+          label="Width (Volume)"
+          name="width"
+          placeholder="Enter width"
+          type="number"
+          value={editedVehicle.capacity?.volume?.width || ""}
+          onChange={(e) =>
+            handleNestedChange("capacity", "volume", {
+              ...editedVehicle.capacity.volume,
+              width: e.target.value,
+            })
+          }
+          min={0}
+        />
+        <TextInput
+          label="Height (Volume)"
+          name="height"
+          placeholder="Enter height"
+          type="number"
+          value={editedVehicle.capacity?.volume?.height || ""}
+          onChange={(e) =>
+            handleNestedChange("capacity", "volume", {
+              ...editedVehicle.capacity.volume,
+              height: e.target.value,
+            })
+          }
+          min={0}
+        />
+        <h2 className="font-bold text-center pt-8">Location:</h2>
+        <TextInput
+          label="Latitude"
+          name="latitude"
+          placeholder="Enter latitude"
+          type="number"
+          value={editedVehicle.current_location?.latitude || ""}
+          onChange={(e) => handleNestedChange("current_location", "latitude", e.target.value)}
+        />
+        <TextInput
+          label="Longitude"
+          name="longitude"
+          placeholder="Enter longitude"
+          type="number"
+          value={editedVehicle.current_location?.longitude || ""}
+          onChange={(e) => handleNestedChange("current_location", "longitude", e.target.value)}
+        />
+        {dialogError && <p className="text-red-500 mt-2">{dialogError}</p>}
+      </Dialog>
     </li>
   );
 };

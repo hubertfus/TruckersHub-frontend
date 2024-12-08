@@ -6,6 +6,7 @@ import VehiclesList from "../vehiclesList/VehiclesList";
 import Dialog from "../dialog/Dialog";
 import TextInput from "../textInput/TextInput";
 import { Vehicle } from "../../types/vehicle";
+import { useUser } from "../../ctx/UserContext";
 
 function VehiclesSection() {
     const [activeTab, setActiveTab] = useState<string>("all");
@@ -22,6 +23,7 @@ function VehiclesSection() {
         current_location: { latitude: "", longitude: "" },
         maintenance_schedule: [],
     });
+    const { user } = useUser()
 
     const [dialogError, setDialogError] = useState<string | null>(null);
 
@@ -113,6 +115,7 @@ function VehiclesSection() {
             } catch (error) {
                 console.error("Error while deleting vehicle:", error);
             }
+            return;
         }
         if(action==="edit"){
             try {
@@ -129,6 +132,24 @@ function VehiclesSection() {
             } catch (error) {
                 console.error("Error while deleting vehicle:", error);
             }   
+            return;
+        }
+        if(action==="assignToOrder"){
+             try {
+                await axios.post(
+                    `http://${import.meta.env.VITE_API_ADDRESS}/orders/assign-vehicle`,{
+                    orderId:value.orderId, vehicleId: value.vehicleId, dispatcherId: user?.id
+                    }
+                );
+                const dialog = document.getElementById("assignToOrder");
+                if (dialog && dialog instanceof HTMLDialogElement) {
+                    dialog.close();
+                }
+                setData(prev=> prev.map((vehicle:Vehicle)=> vehicle._id===value.vehicleId?{...vehicle,isInUse:true} : vehicle))
+            } catch (error) {
+                console.error(error);
+            }
+            return;
         }
     };
     
