@@ -15,7 +15,6 @@ function OrdersSection() {
     const [data, setData] = useState<Order[]>([]);
     const [error, setError] = useState<string | null>(null);
 
-    // State for new order form
     const [orderNumber, setOrderNumber] = useState<string>("");
     const [orderDtType, setOrderDtType] = useState<string>("");
     const [orderDtWeight, setOrderDtWeight] = useState<string>("");
@@ -109,7 +108,8 @@ function OrdersSection() {
                 console.log()
                 setData((prev: Order[]) =>
                     prev.map((order) =>
-                        order._id === value.orderId ? data.order : order
+                        order._id === value.orderId ? {...order, status: data.order.status,
+                             assigned_driver: data.order.assigned_driver, driver_info: data.order.driver_info } : order
                     )
                 );
                 console.log(data);
@@ -188,13 +188,11 @@ function OrdersSection() {
             );
             console.log("Order created successfully:", response.data);
             
-            // Close the dialog after success
             const dialog = document.getElementById("order");
             if (dialog && dialog instanceof HTMLDialogElement) {
                 dialog.close();
             }
 
-            // Reset form state
             setOrderNumber("");
             setOrderDtType("");
             setOrderDtWeight("");
@@ -211,7 +209,6 @@ function OrdersSection() {
             setDeliveryCountry("");
             setEstimatedDeliveryTime("");
 
-            // Add the newly created order to the state
             setData((prev) => [response.data, ...prev]);
         } catch (error) {
             console.error("Error creating order:", error);

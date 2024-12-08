@@ -9,6 +9,8 @@ interface ActionButtonsProps {
     handleAssignDriverModal: () => void;
     handleAssignVehicleModal: () => void;
     handleEditModal: () => void;
+    handleChangeDriverModal: () => void; 
+    handleChangeVehicleModal: () => void; 
 }
 
 function ActionButtons({
@@ -18,7 +20,9 @@ function ActionButtons({
     handleAssignDriverModal,
     handleAssignVehicleModal,
     handleEditModal,
-    }: ActionButtonsProps) {
+    handleChangeDriverModal,  
+    handleChangeVehicleModal, 
+}: ActionButtonsProps) {
     return (
         <div className="flex flex-row flex-wrap gap-2 mt-4 bottom-0 ">
         {role === "driver" && (
@@ -52,6 +56,16 @@ function ActionButtons({
                     Assign Vehicle
                     </button>
                 )}
+                {order.driver_info && (
+                    <button className="btn btn-warning btn-sm w-full" onClick={handleChangeDriverModal}>
+                        Change Driver
+                    </button>
+                )}
+                {order.vehicle_info && (
+                    <button className="btn btn-warning btn-sm w-full" onClick={handleChangeVehicleModal}>
+                        Change Vehicle
+                    </button>
+                )}
                 </>
             )}
             <button className="btn btn-error btn-sm w-full" onClick={() => onAction("delete", order._id)}>
@@ -68,4 +82,4 @@ function ActionButtons({
     );
 }
 
-export default ActionButtons
+export default ActionButtons;

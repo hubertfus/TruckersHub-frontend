@@ -12,7 +12,7 @@ import OrderSummary from "./OrderSummary.tsx";
 import ActionButtons from "./ActionButtons.tsx";
 import EditOrderDialog from "../dialog/EditOrderDialog.tsx";
 
-export type orderCardActions = "cancel" | "accept" | "complete" | "delete" | "assignDriver" | "assignVehicle" | "editOrder";
+export type orderCardActions = "cancel" | "accept" | "complete" | "delete" | "assignDriver" | "assignVehicle" | "editOrder" | "changeDriver" | "changeVehicle";
 
 interface OrderCardProps {
   order: Order; 
@@ -20,10 +20,10 @@ interface OrderCardProps {
   onAction: (action: orderCardActions, value?: any) => void;
 }
 
-
 function OrderCard(props: OrderCardProps) {
   const [drivers, setDrivers] = useState<any[]>([]);
   const [vehicles, setVehicles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const driverDialogRef = useRef<HTMLDialogElement>(null);
   const vehicleDialogRef = useRef<HTMLDialogElement>(null);
@@ -43,11 +43,20 @@ function OrderCard(props: OrderCardProps) {
     completed: "badge-success",
   };
 
-  const handleShowModalWithData = async (dialogRef: React.RefObject<HTMLDialogElement>, fetchUrl: string, setData: (data: any[]) => void) => {
-    if (dialogRef.current) {
-      dialogRef.current.showModal();
+  const handleShowModalWithData = async (
+    dialogRef: React.RefObject<HTMLDialogElement>,
+    fetchUrl: string,
+    setData: React.Dispatch<React.SetStateAction<any[]>>,
+  ) => {
+    setLoading(true); 
+    try {
+      if (dialogRef.current) dialogRef.current.showModal();
       const { data } = await axios.get(fetchUrl);
       setData(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -85,42 +94,64 @@ function OrderCard(props: OrderCardProps) {
             order={props.order}
             onAction={props.onAction}
             handleAssignDriverModal={() =>
-              handleShowModalWithData(
+            handleShowModalWithData(
                 driverDialogRef,
                 `http://${import.meta.env.VITE_API_ADDRESS}/users?available=true`,
-                setDrivers
-              )
+                setDrivers,
+              ) 
             }
             handleAssignVehicleModal={() =>
               handleShowModalWithData(
                 vehicleDialogRef,
                 `http://${import.meta.env.VITE_API_ADDRESS}/vehicles?available=true`,
-                setVehicles
+                setVehicles,
               )
             }
             handleEditModal={() =>
               handleShowModalWithData(editDialogRef, "", () => {})
+            }
+            handleChangeDriverModal={()=> 
+              handleShowModalWithData(
+                driverDialogRef,
+                `http://${import.meta.env.VITE_API_ADDRESS}/users?available=true${props.order.assigned_driver ? `&userId=${props.order.assigned_driver}` : ''}`,
+                setDrivers,
+              )
+            }
+            handleChangeVehicleModal={()=>
+              handleShowModalWithData(
+                vehicleDialogRef,
+                `http://${import.meta.env.VITE_API_ADDRESS}/vehicles?available=true${props.order.vehicle_id ? `&vehicleId=${props.order.vehicle_id}` : ''}`,
+                setVehicles,
+              )
             }
           />
         </div>
       </div>
 
       <Dialog id="assignDriverDialog" title="Assign Driver" ref={driverDialogRef}>
-        <DriverList
-          drivers={drivers}
-          onSelect={(driverId) =>
-            props.onAction("assignDriver", { driverId, orderId: props.order._id })
-          }
-        />
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <DriverList
+            drivers={drivers}
+            onSelect={(driverId) =>
+              props.onAction("assignDriver", { driverId, orderId: props.order._id })
+            }
+          />
+        )}
       </Dialog>
 
       <Dialog id="assignVehicleDialog" title="Assign Vehicle" ref={vehicleDialogRef}>
-        <VehiclesList
-          vehicles={vehicles}
-          onSelect={(vehicleId) =>
-            props.onAction("assignVehicle", { vehicleId, orderId: props.order._id })
-          }
-        />
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <VehiclesList
+            vehicles={vehicles}
+            onSelect={(vehicleId) =>
+              props.onAction("assignVehicle", { vehicleId, orderId: props.order._id })
+            }
+          />
+        )}
       </Dialog>
 
       <EditOrderDialog
