@@ -6,7 +6,7 @@ import DriverList from "../driversList/DriversList";
 
 function DriversSection() {
     const [activeTab, setActiveTab] = useState<string>("all");
-    const [data, setData] = useState([]);
+    const [data, setData] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -63,6 +63,18 @@ function DriversSection() {
                 }   
                 return;
             }
+        }
+        if (action === "delete") {
+            try {
+                await axios.delete(
+                    `http://${import.meta.env.VITE_API_ADDRESS}/users/delete/${value}`
+                );
+
+                setData((prev: any[]) => prev.filter((driver) => driver._id !== value));
+            } catch (error) {
+                console.error(error);
+            }
+            return;
         }
     }
 

@@ -90,7 +90,7 @@ const DriverCard = ({
         {driver.availability && <button className="btn btn-success btn-sm w-full">
           Assign to Order
         </button>}
-        <button className="btn btn-error btn-sm w-full">
+        <button className="btn btn-error btn-sm w-full" onClick={()=> onAction && onAction("delete",driver._id)}>
           Delete
         </button>
       </div>}
