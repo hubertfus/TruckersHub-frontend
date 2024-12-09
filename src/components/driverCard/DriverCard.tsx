@@ -1,17 +1,20 @@
 import { useState } from "react";
 import Dialog from "../dialog/Dialog";
 import TextInput from "../textInput/TextInput";
+import { User } from "../../ctx/UserContext";
 
 interface DriverCardProps {
   driver: any;
   onSelect?: (userId: string) => void;
   onAction?: (action: string, value?: any) => void;
+  role: Pick<User, "role">["role"]
 }
 
 const DriverCard = ({
   driver,
   onSelect,
-  onAction
+  onAction,
+  role
 }: DriverCardProps) => {
   const driverName = driver.name || '';
 
@@ -21,7 +24,7 @@ const DriverCard = ({
     phone: driver.phone || '',
     license_number: driver.license_number || '',
   });
-
+  console.log(driver)
   const [dialogError, setDialogError] = useState<string | null>(null);
 
   const handleInputChange = (field: string, value: string) => {
@@ -72,7 +75,7 @@ const DriverCard = ({
         </span>
       </div>
 
-      <div className="flex flex-wrap justify-evenly gap-1 mt-4">
+      {role === "dispatcher" && <div className="flex flex-wrap justify-evenly gap-1 mt-4">
         <button
           className="btn btn-primary btn-sm w-full"
           onClick={async () => {
@@ -84,13 +87,13 @@ const DriverCard = ({
         >
           Edit
         </button>
-        <button className="btn btn-success btn-sm w-full">
+        {driver.availability && <button className="btn btn-success btn-sm w-full">
           Assign to Order
-        </button>
+        </button>}
         <button className="btn btn-error btn-sm w-full">
           Delete
         </button>
-      </div>
+      </div>}
 
       <Dialog
         id={`editDriver${driver._id}`}

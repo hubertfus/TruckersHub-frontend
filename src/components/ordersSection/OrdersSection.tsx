@@ -105,7 +105,7 @@ function OrdersSection() {
                     `http://${import.meta.env.VITE_API_ADDRESS}/orders/assign-driver`,
                     { orderId: value.orderId, driverId: value.driverId, dispatcherId: user?.id }
                 );
-                console.log()
+                console.log(data)
                 setData((prev: Order[]) =>
                     prev.map((order) =>
                         order._id === value.orderId ? {...order, status: data.order.status,

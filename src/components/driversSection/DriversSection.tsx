@@ -69,7 +69,7 @@ function DriversSection() {
     return (
         <div>
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
-            <DriverList drivers={filteredDrivers(activeTab)} onAction={handleAction}/>
+            <DriverList drivers={filteredDrivers(activeTab)} onAction={handleAction} role="dispatcher"/>
         </div>
     );
 }

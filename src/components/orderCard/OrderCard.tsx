@@ -137,6 +137,7 @@ function OrderCard(props: OrderCardProps) {
             onSelect={(driverId) =>
               props.onAction("assignDriver", { driverId, orderId: props.order._id })
             }
+            role=""
           />
         )}
       </Dialog>

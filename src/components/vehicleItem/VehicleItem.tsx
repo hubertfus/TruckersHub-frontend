@@ -117,7 +117,7 @@ const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) =>
             if (dialog && dialog instanceof HTMLDialogElement) {
                 dialog.showModal();
                 try {
-                  const {data} = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/orders`);
+                  const {data} = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/orders?role=dispatcher&createdAndWtihNoVehicleAssigned=true`);
                   console.log(data)
                   setOrders(data);
               } catch (error: any) {
