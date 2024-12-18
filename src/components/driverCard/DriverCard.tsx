@@ -2,6 +2,9 @@ import { useState } from "react";
 import Dialog from "../dialog/Dialog";
 import TextInput from "../textInput/TextInput";
 import { User } from "../../ctx/UserContext";
+import OrderList from "../orderList/OrderList";
+import { Order } from "../../types/order";
+import axios from "axios";
 
 interface DriverCardProps {
   driver: any;
@@ -17,15 +20,14 @@ const DriverCard = ({
   role
 }: DriverCardProps) => {
   const driverName = driver.name || '';
-
   const [editedDriver, setEditedDriver] = useState({
     name: driver.name || '',
     email: driver.email || '',
     phone: driver.phone || '',
     license_number: driver.license_number || '',
   });
-  console.log(driver)
   const [dialogError, setDialogError] = useState<string | null>(null);
+  const [orders, setOrders] = useState<Order[]>([])
 
   const handleInputChange = (field: string, value: string) => {
     setEditedDriver((prev) => ({
@@ -44,6 +46,12 @@ const DriverCard = ({
 
     setDialogError(null); 
   };
+
+  const handleAction = async (action: string, value?: any) =>{
+    if(action==="click"){
+      onAction && onAction("assignToOrder",{orderId:value, driverId: driver._id})
+    }
+  }
 
   return (
     <div
@@ -87,13 +95,32 @@ const DriverCard = ({
         >
           Edit
         </button>
-        {driver.availability && <button className="btn btn-success btn-sm w-full">
+        {driver.availability && <button className="btn btn-success btn-sm w-full" onClick={async () => {
+            const dialog = document.getElementById(`assignToOrder${driver._id}`);
+            if (dialog && dialog instanceof HTMLDialogElement) {
+                dialog.showModal();
+                try {
+                  const {data} = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/orders?role=dispatcher&createdAndWtihNoVehicleAssigned=true`);
+                  setOrders(data);
+              } catch (error: any) {
+                  console.error("Error fetching orders:", error);
+              }
+            }
+        }}>
           Assign to Order
         </button>}
         <button className="btn btn-error btn-sm w-full" onClick={()=> onAction && onAction("delete",driver._id)}>
           Delete
         </button>
       </div>}
+
+
+      <Dialog
+        id={`assignToOrder${driver._id}`}
+        title="Assign to order"
+        closeText="Cancel">
+          <OrderList orders={orders} onAction={handleAction} role=""/>
+      </Dialog>
 
       <Dialog
         id={`editDriver${driver._id}`}

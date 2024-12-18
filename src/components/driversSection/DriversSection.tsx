@@ -3,11 +3,13 @@ import { Check, User, AlertCircle } from "lucide-react";
 import axios from "axios";
 import Tabs from "../tabs/Tabs";
 import DriverList from "../driversList/DriversList";
+import { useUser } from "../../ctx/UserContext";
 
 function DriversSection() {
     const [activeTab, setActiveTab] = useState<string>("all");
     const [data, setData] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const { user } = useUser()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -46,7 +48,6 @@ function DriversSection() {
         if(action==="edit"){
             if(action==="edit"){
                 try {
-                    console.log(value)
                    await axios.put(
                         `http://${import.meta.env.VITE_API_ADDRESS}/users/edit/${value.driverId}`,{
                             ...value.editedDriver
@@ -76,6 +77,23 @@ function DriversSection() {
             }
             return;
         }
+        if(action==="assignToOrder"){
+            try {
+               await axios.post(
+                   `http://${import.meta.env.VITE_API_ADDRESS}/orders/assign-driver`,{
+                   orderId:value.orderId, driverId: value.driverId, dispatcherId: user?.id
+                   }
+               );
+               const dialog = document.getElementById(`assignToOrder${value.driverId}`);
+               if (dialog && dialog instanceof HTMLDialogElement) {
+                   dialog.close();
+               }
+               setData(prev=> prev.map((vehicle:any)=> vehicle._id===value.vehicleId?{...vehicle,isInUse:true} : vehicle))
+           } catch (error) {
+               console.error(error);
+           }
+           return;
+       }
     }
 
     return (

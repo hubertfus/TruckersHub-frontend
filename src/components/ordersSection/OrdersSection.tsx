@@ -105,7 +105,6 @@ function OrdersSection() {
                     `http://${import.meta.env.VITE_API_ADDRESS}/orders/assign-driver`,
                     { orderId: value.orderId, driverId: value.driverId, dispatcherId: user?.id }
                 );
-                console.log(data)
                 setData((prev: Order[]) =>
                     prev.map((order) =>
                         order._id === value.orderId ? {...order, status: data.order.status,
@@ -113,7 +112,7 @@ function OrdersSection() {
                     )
                 );
                 
-                const dialog = document.getElementById("assignDriverDialog");
+                const dialog = document.getElementById(`assignDriverDialog${value.orderId}`);
                 if (dialog && dialog instanceof HTMLDialogElement) {
                     dialog.close();
                 }
@@ -135,7 +134,7 @@ function OrdersSection() {
                     )
                 );
 
-                const dialog = document.getElementById("assignVehicleDialog");
+                const dialog = document.getElementById(`assignVehicleDialog${value.orderId}`);
                 if (dialog && dialog instanceof HTMLDialogElement) {
                     dialog.close();
                 }
@@ -156,7 +155,10 @@ function OrdersSection() {
     
                 setData((prev: Order[]) =>
                     prev.map((order) =>
-                        order._id === value.orderId ? response.data.order : order
+                        order._id === value.orderId ? {...response.data.order,
+                            assigned_driver:order.assigned_driver,
+                            vehicle_id:order.vehicle_id, vehicle_info:order.vehicle_info,
+                            driver_info:order.driver_info} : order
                     )
                 );
             } catch (error) {

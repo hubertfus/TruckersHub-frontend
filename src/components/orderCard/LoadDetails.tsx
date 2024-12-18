@@ -10,9 +10,9 @@ function LoadDetails({ type, weight, dimensions }: LoadDetailsProps) {
             <p className="font-semibold">Load Details:</p>
             <p>Type: {type}</p>
             <p>
-                Dimensions: {dimensions.length} x {dimensions.width} x {dimensions.height} cm
+                Dimensions: {dimensions.length.toFixed(2)} x {dimensions.width.toFixed(2)} x {dimensions.height.toFixed(2)} cm
             </p>
-            <p>Weight: {weight} kg</p>
+            <p>Weight: {weight.toFixed(2)} kg</p>
         </div>
     );
 }

@@ -128,7 +128,7 @@ function OrderCard(props: OrderCardProps) {
         </div>
       </div>
 
-      <Dialog id="assignDriverDialog" title="Assign Driver" ref={driverDialogRef}>
+      <Dialog id={`assignDriverDialog${props.order._id}`} title="Assign Driver" ref={driverDialogRef}>
         {loading ? (
           <div>Loading...</div>
         ) : (
@@ -142,7 +142,7 @@ function OrderCard(props: OrderCardProps) {
         )}
       </Dialog>
 
-      <Dialog id="assignVehicleDialog" title="Assign Vehicle" ref={vehicleDialogRef}>
+      <Dialog id={`assignVehicleDialog${props.order._id}`} title="Assign Vehicle" ref={vehicleDialogRef}>
         {loading ? (
           <div>Loading...</div>
         ) : (
