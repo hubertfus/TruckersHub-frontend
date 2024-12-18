@@ -6,12 +6,15 @@ import { X, Truck, UserSearch, Check } from "lucide-react";
 import { useUser } from "../../ctx/UserContext";
 import { useNavigate } from "react-router-dom";
 import Tabs from "../../components/tabs/Tabs";  
+import ToastGroup from "../../components/toastGroup/ToastGroup.tsx";
+import Toast from "../../components/toast/Toast.tsx";
 
 function DispatcherViewPage() {
     const [data, setData] = useState<Order[]>([]); 
     const { user } = useUser();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState<string>("all"); 
+    const [toasts, setToasts] = useState<{type:string, message:string}[]>([])
 
     useEffect(() => {
         if (!user) {
@@ -22,10 +25,12 @@ function DispatcherViewPage() {
 
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/orders`, {
+                const {data} = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/orders`, {
                     params: { role: user.role, driverId: user.id },
                 });
-                setData(response.data);
+                setData(data.data);
+                setToasts(prev => [...prev, { type: "success", message: data.message }]);
+
             } catch (error: any) {
                 console.error("Error fetching orders:", error);
             }
@@ -52,11 +57,12 @@ function DispatcherViewPage() {
     async function handleAction(action: string, value?: any) {
         if (action === "accept") {
             try {
-                await axios.post(`http://${import.meta.env.VITE_API_ADDRESS}/orders/accept`, {
+                const { data } =  await axios.post(`http://${import.meta.env.VITE_API_ADDRESS}/orders/accept`, {
                     userId: user?.id,
                     orderId: value,
                 });
-    
+                setToasts(prev => [...prev, { type: "success", message: data.message }]);
+
                 const { data: updatedOrder } = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/orders/${value}`);
                 setData((prev: Order[]) =>
                     prev.map(order =>
@@ -70,11 +76,12 @@ function DispatcherViewPage() {
         }
         if(action==="cancel"){
             try {
-                await axios.post(`http://${import.meta.env.VITE_API_ADDRESS}/orders/cancel`, {
+                const {data} = await axios.post(`http://${import.meta.env.VITE_API_ADDRESS}/orders/cancel`, {
                     userId: user?.id,
                     orderId: value
                 });
-    
+                setToasts(prev => [...prev, { type: "success", message: data.message }]);
+
                 const { data: updatedOrder } = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/orders/${value}`);
                 setData((prev: Order[]) =>
                     prev.map(order =>
@@ -87,10 +94,15 @@ function DispatcherViewPage() {
         }
     }
     
-    
+    const closeToastHandle = (index: number)=>{
+        setToasts(prev => prev.filter((_,indx)=> indx !== index))
+    }
 
     return (
         <div className="p-5">
+            <ToastGroup>
+                {toasts?.map(((toast,index)=><Toast key={index} type={toast.type} message={toast.message} onClose={closeToastHandle} index={index}/>))}
+            </ToastGroup>
             <h2 className="text-center">Available Orders</h2>
             
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />

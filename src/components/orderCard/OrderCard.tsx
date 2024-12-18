@@ -113,7 +113,7 @@ function OrderCard(props: OrderCardProps) {
             handleChangeDriverModal={()=> 
               handleShowModalWithData(
                 driverDialogRef,
-                `http://${import.meta.env.VITE_API_ADDRESS}/users?available=true${props.order.assigned_driver ? `&userId=${props.order.assigned_driver}` : ''}`,
+                `http://${import.meta.env.VITE_API_ADDRESS}/users?available=true`,
                 setDrivers,
               )
             }

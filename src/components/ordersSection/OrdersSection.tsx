@@ -8,6 +8,8 @@ import { Order } from "../../types/order";
 import Dialog from "../dialog/Dialog";
 import TextInput from "../textInput/TextInput";
 import DatePicker from "../datePicker/DatePicker";
+import ToastGroup from "../toastGroup/ToastGroup";
+import Toast from "../toast/Toast";
 
 function OrdersSection() {
     const { user } = useUser();
@@ -30,17 +32,19 @@ function OrdersSection() {
     const [deliveryZip, setDeliveryZip] = useState<string>("");
     const [deliveryCountry, setDeliveryCountry] = useState<string>("");
     const [estimatedDeliveryTime, setEstimatedDeliveryTime] = useState<string>("");
+    const [toasts, setToasts] = useState<{type:string, message:string}[]>([])
 
     useEffect(() => {
         if (!user) return;
 
         const fetchData = async () => {
             try {
-                const response = await axios.get(
+                const {data} = await axios.get(
                     `http://${import.meta.env.VITE_API_ADDRESS}/orders`,
                     { params: { role: user.role } }
                 );
-                setData(response.data);
+                setData(data.data);
+                setToasts(prev => [...prev, { type: "success", message: data.message }]);
             } catch (err: any) {
                 console.error("Error fetching orders:", err);
                 setError(err.message || "Unknown error occurred");
@@ -68,10 +72,11 @@ function OrdersSection() {
     const handleAction = async (action: string, value?: any) => {
         if (action === "complete") {
             try {
-                await axios.post(
+                const {data} =  await axios.post(
                     `http://${import.meta.env.VITE_API_ADDRESS}/orders/complete`,
                     { userId: user?.id, orderId: value }
                 );
+                setToasts(prev => [...prev, { type: "success", message: data.message }]);
 
                 const { data: updatedOrder } = await axios.get(
                     `http://${import.meta.env.VITE_API_ADDRESS}/orders/${value}`
@@ -87,10 +92,11 @@ function OrdersSection() {
 
         if (action === "delete") {
             try {
-                await axios.delete(
+                const {data} = await axios.delete(
                     `http://${import.meta.env.VITE_API_ADDRESS}/orders/${value}`,
                     { data: { userId: user?.id, orderId: value } }
                 );
+                setToasts(prev => [...prev, { type: "success", message: data.message }]);
 
                 setData((prev: Order[]) => prev.filter((order) => order._id !== value));
             } catch (error) {
@@ -111,7 +117,8 @@ function OrdersSection() {
                              assigned_driver: data.order.assigned_driver, driver_info: data.order.driver_info } : order
                     )
                 );
-                
+                setToasts(prev => [...prev, { type: "success", message: data.message }]);
+
                 const dialog = document.getElementById(`assignDriverDialog${value.orderId}`);
                 if (dialog && dialog instanceof HTMLDialogElement) {
                     dialog.close();
@@ -133,6 +140,7 @@ function OrdersSection() {
                         order._id === value.orderId ? { ...order, vehicle_info: data.order.vehicle_info, vehicle_id: data.order.vehicle_id } : order
                     )
                 );
+                setToasts(prev => [...prev, { type: "success", message: data.message }]);
 
                 const dialog = document.getElementById(`assignVehicleDialog${value.orderId}`);
                 if (dialog && dialog instanceof HTMLDialogElement) {
@@ -144,7 +152,7 @@ function OrdersSection() {
         }
         if (action === "editOrder") {
             try {
-                const response = await axios.put(
+                const {data} = await axios.put(
                     `http://${import.meta.env.VITE_API_ADDRESS}/orders/update`,
                     {
                         orderId: value.orderId,
@@ -152,10 +160,11 @@ function OrdersSection() {
                         dispatcherId: user?.id
                     }
                 );
-    
+                setToasts(prev => [...prev, { type: "success", message: data.message }]);
+
                 setData((prev: Order[]) =>
                     prev.map((order) =>
-                        order._id === value.orderId ? {...response.data.order,
+                        order._id === value.orderId ? {...data.data.order,
                             assigned_driver:order.assigned_driver,
                             vehicle_id:order.vehicle_id, vehicle_info:order.vehicle_info,
                             driver_info:order.driver_info} : order
@@ -182,11 +191,11 @@ function OrdersSection() {
         };
 
         try {
-            const response = await axios.post(
+            const {data} = await axios.post(
                 `http://${import.meta.env.VITE_API_ADDRESS}/orders/create`,
                 newOrder
             );
-            console.log("Order created successfully:", response.data);
+            console.log("Order created successfully:", data.data);
             
             const dialog = document.getElementById("order");
             if (dialog && dialog instanceof HTMLDialogElement) {
@@ -209,11 +218,16 @@ function OrdersSection() {
             setDeliveryCountry("");
             setEstimatedDeliveryTime("");
 
-            setData((prev) => [response.data, ...prev]);
+            setData((prev) => [data.data, ...prev]);
+            setToasts(prev => [...prev, { type: "success", message: data.message }]);
         } catch (error) {
             console.error("Error creating order:", error);
         }
     };
+
+    const closeToastHandle = (index: number)=>{
+        setToasts(prev => prev.filter((_,indx)=> indx !== index))
+    }
 
     if (error) {
         return <p className="text-red-500">Error fetching orders: {error}</p>;
@@ -221,6 +235,9 @@ function OrdersSection() {
 
     return (
         <div className="overflow-hidden">
+            <ToastGroup>
+                {toasts?.map(((toast,index)=><Toast key={index} type={toast.type} message={toast.message} onClose={closeToastHandle} index={index}/>))}
+            </ToastGroup>
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
             <OrderList orders={filteredOrders(activeTab)} onAction={handleAction} role="dispatcher" />
             <div className="fixed bottom-4 right-4">

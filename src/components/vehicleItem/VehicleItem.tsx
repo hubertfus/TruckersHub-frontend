@@ -118,7 +118,7 @@ const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) =>
                 dialog.showModal();
                 try {
                   const {data} = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/orders?role=dispatcher&createdAndWtihNoVehicleAssigned=true`);
-                  setOrders(data);
+                  setOrders(data.data);
               } catch (error: any) {
                   console.error("Error fetching orders:", error);
               }

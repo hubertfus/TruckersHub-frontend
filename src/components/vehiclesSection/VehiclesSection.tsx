@@ -7,6 +7,8 @@ import Dialog from "../dialog/Dialog";
 import TextInput from "../textInput/TextInput";
 import { Vehicle } from "../../types/vehicle";
 import { useUser } from "../../ctx/UserContext";
+import ToastGroup from "../toastGroup/ToastGroup";
+import Toast from "../toast/Toast";
 
 function VehiclesSection() {
     const [activeTab, setActiveTab] = useState<string>("all");
@@ -26,12 +28,15 @@ function VehiclesSection() {
     const { user } = useUser()
 
     const [dialogError, setDialogError] = useState<string | null>(null);
+    const [toasts, setToasts] = useState<{type:string, message:string}[]>([])
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/vehicles`);
-                setData(response.data);
+                const {data} = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/vehicles`);
+                setData(data.vehicles);
+                setToasts(prev => [...prev, { type: "success", message: data.message }]);
+
             } catch (err: any) {
                 console.error("Error fetching vehicles:", err);
                 setError(err.message || "Unknown error occurred");
@@ -78,7 +83,9 @@ function VehiclesSection() {
                 setDialogError("Please fill in all required fields.");
                 return;
             }
-            await axios.post(`http://${import.meta.env.VITE_API_ADDRESS}/vehicles/add-vehicle`, newVehicle);
+            const {data} = await axios.post(`http://${import.meta.env.VITE_API_ADDRESS}/vehicles/add-vehicle`, newVehicle);
+            setToasts(prev => [...prev, { type: "success", message: data.message }]);
+
             const response = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/vehicles`);
             setData(response.data);
             const dialog = document.getElementById("addVehicle");
@@ -107,10 +114,11 @@ function VehiclesSection() {
     const handleAction = async (action: string, value?: any) => {
         if (action === "delete") {
             try {
-                await axios.delete(
+                const {data} = await axios.delete(
                     `http://${import.meta.env.VITE_API_ADDRESS}/vehicles/delete/${value}`
                 );
-    
+                setToasts(prev => [...prev, { type: "success", message: data.message }]);
+
                 setData((prev: Vehicle[]) => prev.filter((vehicle) => vehicle._id !== value));
             } catch (error) {
                 console.error("Error while deleting vehicle:", error);
@@ -119,11 +127,13 @@ function VehiclesSection() {
         }
         if(action==="edit"){
             try {
-               await axios.put(
+                const {data} = await axios.put(
                     `http://${import.meta.env.VITE_API_ADDRESS}/vehicles/edit/${value.vehicleId}`,{
                         ...value.editedVehicle
                     }
                 );
+                setToasts(prev => [...prev, { type: "success", message: data.message }]);
+
                 setData((prev) =>
                     prev.map((vehicle) =>
                       vehicle._id === value.vehicleId ? { ...value.editedVehicle } : vehicle
@@ -136,11 +146,13 @@ function VehiclesSection() {
         }
         if(action==="assignToOrder"){
              try {
-                await axios.post(
+                const {data} = await axios.post(
                     `http://${import.meta.env.VITE_API_ADDRESS}/orders/assign-vehicle`,{
                     orderId:value.orderId, vehicleId: value.vehicleId, dispatcherId: user?.id
                     }
                 );
+                setToasts(prev => [...prev, { type: "success", message: data.message }]);
+
                 const dialog = document.getElementById("assignToOrder");
                 if (dialog && dialog instanceof HTMLDialogElement) {
                     dialog.close();
@@ -153,13 +165,19 @@ function VehiclesSection() {
         }
     };
     
-
+    const closeToastHandle = (index: number)=>{
+        setToasts(prev => prev.filter((_,indx)=> indx !== index))
+    }
+    
     if (error) {
         return <p className="text-red-500">Error fetching vehicles: {error}</p>;
     }
 
     return (
         <div>
+            <ToastGroup>
+                {toasts?.map(((toast,index)=><Toast key={index} type={toast.type} message={toast.message} onClose={closeToastHandle} index={index}/>))}
+            </ToastGroup>
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
             <VehiclesList vehicles={filteredVehicles(activeTab)} role="dispatcher"  onAction={handleAction}/>
             <div className="fixed bottom-4 right-4">

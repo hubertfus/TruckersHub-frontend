@@ -4,20 +4,25 @@ import axios from "axios";
 import Tabs from "../tabs/Tabs";
 import DriverList from "../driversList/DriversList";
 import { useUser } from "../../ctx/UserContext";
+import ToastGroup from "../toastGroup/ToastGroup";
+import Toast from "../toast/Toast";
 
 function DriversSection() {
     const [activeTab, setActiveTab] = useState<string>("all");
     const [data, setData] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
     const { user } = useUser()
+    const [toasts, setToasts] = useState<{type:string, message:string}[]>([])
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/users`, {
+                const {data} = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/users`, {
                     params: { role: activeTab === "all" ? undefined : "driver" },
                 });
-                setData(response.data);
+                setToasts(prev => [...prev, { type: "success", message: data.message }]);
+
+                setData(data.drivers);
             } catch (err: any) {
                 console.error("Error fetching drivers:", err);
                 setError(err.message || "Unknown error occurred");
@@ -48,11 +53,13 @@ function DriversSection() {
         if(action==="edit"){
             if(action==="edit"){
                 try {
-                   await axios.put(
+                    const {data} = await axios.put(
                         `http://${import.meta.env.VITE_API_ADDRESS}/users/edit/${value.driverId}`,{
                             ...value.editedDriver
                         }
                     );
+                    setToasts(prev => [...prev, { type: "success", message: data.message }]);
+
                     setData((prev:any) =>
                         prev.map((driver:any)=> driver._id===value.driverId ?{...driver, email:value.editedDriver.email,
                             license_number: value.editedDriver.license_number, name: value.editedDriver.name, 
@@ -67,9 +74,10 @@ function DriversSection() {
         }
         if (action === "delete") {
             try {
-                await axios.delete(
+                const {data} = await axios.delete(
                     `http://${import.meta.env.VITE_API_ADDRESS}/users/delete/${value}`
                 );
+                setToasts(prev => [...prev, { type: "success", message: data.message }]);
 
                 setData((prev: any[]) => prev.filter((driver) => driver._id !== value));
             } catch (error) {
@@ -79,11 +87,13 @@ function DriversSection() {
         }
         if(action==="assignToOrder"){
             try {
-               await axios.post(
+                const {data} = await axios.post(
                    `http://${import.meta.env.VITE_API_ADDRESS}/orders/assign-driver`,{
                    orderId:value.orderId, driverId: value.driverId, dispatcherId: user?.id
                    }
                );
+               setToasts(prev => [...prev, { type: "success", message: data.message }]);
+
                const dialog = document.getElementById(`assignToOrder${value.driverId}`);
                if (dialog && dialog instanceof HTMLDialogElement) {
                    dialog.close();
@@ -95,9 +105,16 @@ function DriversSection() {
            return;
        }
     }
+    
+    const closeToastHandle = (index: number)=>{
+        setToasts(prev => prev.filter((_,indx)=> indx !== index))
+    }
 
     return (
         <div>
+            <ToastGroup>
+                {toasts?.map(((toast,index)=><Toast key={index} type={toast.type} message={toast.message} onClose={closeToastHandle} index={index}/>))}
+            </ToastGroup>
             <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
             <DriverList drivers={filteredDrivers(activeTab)} onAction={handleAction} role="dispatcher"/>
         </div>
