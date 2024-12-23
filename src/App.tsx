@@ -5,6 +5,7 @@ import DriverViewPage from "./pages/DriverViewPage/DriverViewPage.tsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { UserProvider } from './ctx/UserContext';  
 import DispatcherViewPage from "./pages/dispatcherViewPage/DispatcherViewPage.tsx";
+import UserDetails from "./pages/userDetails/UserDetails.tsx";
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/driver" element={<DriverViewPage />} />
                         <Route path="/dispatcher" element={<DispatcherViewPage />} />
+                        <Route path="/users/:id" element={<UserDetails />} />
                     </Routes>
                 </div>
             </Router>

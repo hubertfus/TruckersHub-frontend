@@ -5,6 +5,7 @@ import { User } from "../../ctx/UserContext";
 import OrderList from "../orderList/OrderList";
 import { Order } from "../../types/order";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 interface DriverCardProps {
   driver: any;
@@ -67,7 +68,7 @@ const DriverCard = ({
       </div>
 
       <div className="text-center space-y-2">
-        <h2 className="text-xl font-semibold">{driverName}</h2>
+        <Link to={`/users/${driver._id}`}><h2 className="text-xl font-semibold text-blue-600">{driverName}</h2></Link>
         <p className="text-sm text-gray-500">
           License: {driver.license_number || "N/A"}
         </p>

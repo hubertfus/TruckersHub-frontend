@@ -1,5 +1,6 @@
 import {useState} from "react";
 import { useUser } from "../../ctx/UserContext";
+import { Link } from "react-router-dom";
 
 function Header() {
     const [isMenuOpen, setMenuOpen] = useState(false);
@@ -65,8 +66,8 @@ function Header() {
             <div
                 className={`fixed  top-0 left-0 h-full w-64 bg-base-200 z-40 transform ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out`}>
                 <ul className="menu p-4 w-64 h-full bg-base-100">
-                    <li><a href="#">PlaceHolder</a></li>
-                    <li><a href="#">PlaceHolder</a></li>
+                    <li><Link to="/">Home</Link></li>
+                    <li><a href="#">Profile</a></li>
                     <li className="flex-1 justify-end" onClick={logout}><a href="#">Logout</a></li>
                 </ul>
                 

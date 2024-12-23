@@ -52,7 +52,7 @@ function OrderCard(props: OrderCardProps) {
     try {
       if (dialogRef.current) dialogRef.current.showModal();
       const { data } = await axios.get(fetchUrl);
-      setData(data);
+      setData(data.drivers ?? data.vehicles);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
