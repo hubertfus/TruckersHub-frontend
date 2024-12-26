@@ -7,18 +7,18 @@ import { VehicleInfo } from "../../components/vehicleInfo/VehicleInfo";
 import axios from "axios";
 
 export interface Order {
-    _id: string;
-    order_number: string;
-    status: string;
-    load_details: {
-      type: string;
-      weight: number;
-      dimensions: { length: number; width: number; height: number };
-    };
-    pickup_address: { street: string; city: string; zip_code: string; country: string };
-    delivery_address: { street: string; city: string; zip_code: string; country: string };
-    created_at: string; 
-  }
+  _id: string;
+  order_number: string;
+  status: string;
+  load_details: {
+    type: string;
+    weight: number;
+    dimensions: { length: number; width: number; height: number };
+  };
+  pickup_address: { street: string; city: string; zip_code: string; country: string };
+  delivery_address: { street: string; city: string; zip_code: string; country: string };
+  created_at: string; 
+}
 
 export interface Vehicle {
   license_plate: string;
@@ -69,34 +69,32 @@ function UserDetails() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <p className="text-lg font-semibold text-gray-600">Loading user details...</p>
+      <div className="min-h-screen bg-base-200 flex items-center justify-center">
+        <p className="text-lg font-semibold text-base-content/70">Loading user details...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <p className="text-lg font-semibold text-red-600">{error}</p>
+      <div className="min-h-screen bg-base-200 flex items-center justify-center">
+        <p className="text-lg font-semibold text-error">{error}</p>
       </div>
     );
   }
 
   if (!userData) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <p className="text-lg font-semibold text-gray-600">No user data available.</p>
+      <div className="min-h-screen bg-base-200 flex items-center justify-center">
+        <p className="text-lg font-semibold text-base-content/70">No user data available.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-base-200">
       <div className="container mx-auto px-4 py-8">
-        <UserProfile
-          {...userData}
-        />
+        <UserProfile {...userData} />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {userData.current_order && <CurrentOrder {...userData.current_order} />}

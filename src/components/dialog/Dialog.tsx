@@ -51,10 +51,12 @@ const Dialog = forwardRef<HTMLDialogElement, DialogProps>(({
 
   return (
     <dialog id={id} ref={ref || dialogRef} className={`modal ${className}`}>
-      <div className={`modal-box w-11/12 ${size}`}>
-        {title && <h3 className="font-bold text-lg">{title}</h3>}
-        <div className="py-4">{children}</div>
-        <div className="modal-action flex-row gap-4 justify-end">
+      <div className={`modal-box w-11/12 ${size} flex flex-col`}>
+        {title && <h3 className="font-bold text-lg mb-4">{title}</h3>}
+        <div className="flex-1 overflow-y-auto py-4">
+          {children}
+        </div>
+        <div className="modal-action flex gap-4 justify-end">
           <button className="btn btn-error" onClick={handleClose}>{closeText}</button>
           {acceptText && <button className="btn btn-success" onClick={handleAccept}>{acceptText}</button>}
         </div>

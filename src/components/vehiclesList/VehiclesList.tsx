@@ -12,7 +12,7 @@ const VehiclesList = ({ vehicles, onSelect, role = "driver", onAction }: Vehicle
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-semibold mb-6 text-center">Vehicle List</h1>
-      <ul className="divide-y divide-gray-200 border rounded-lg overflow-hidden">
+      <ul className="flex flex-col gap-4 overflow-hidden">
         {vehicles.map((vehicle) => (
           <VehicleItem
             key={vehicle._id}

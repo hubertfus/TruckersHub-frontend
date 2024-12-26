@@ -32,45 +32,48 @@ type OrderHistoryItemProps = {
 };
 
 export function OrderHistoryItem({ order }: OrderHistoryItemProps) {
-  const statusColor = order.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+  const statusColor =
+    order.status === 'completed'
+      ? 'bg-success text-success-content'
+      : 'bg-error text-error-content';
 
   return (
-    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+    <div className="border border-base-300 rounded-lg p-4 hover:shadow-md transition-shadow bg-base-100">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
-          <Package className="w-5 h-5 text-gray-500" />
+          <Package className="w-5 h-5 text-base-content/70" />
           <div>
-            <p className="font-semibold text-gray-800">{order.order_number}</p>
-            <p className="text-sm text-gray-500">
+            <p className="font-semibold text-base-content">{order.order_number}</p>
+            <p className="text-sm text-base-content/70">
               {new Date(order.created_at).toLocaleDateString()}
             </p>
           </div>
         </div>
         <span className={`px-3 py-1 rounded-full text-sm capitalize ${statusColor}`}>
-          {order.status}
+          {order.status.replace('_', ' ')}
         </span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-base-content/70">
             <span className="font-semibold">Type:</span> {order.load_details.type}
           </p>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-base-content/70">
             <span className="font-semibold">Weight:</span> {order.load_details.weight}kg
           </p>
         </div>
-        
+
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
-            <MapPin className="w-4 h-4 text-blue-500" />
-            <p className="text-sm text-gray-600">
+            <MapPin className="w-4 h-4 text-info" />
+            <p className="text-sm text-base-content/70">
               {order.pickup_address.city}, {order.pickup_address.country}
             </p>
           </div>
           <div className="flex items-center space-x-2">
-            <MapPin className="w-4 h-4 text-red-500" />
-            <p className="text-sm text-gray-600">
+            <MapPin className="w-4 h-4 text-error" />
+            <p className="text-sm text-base-content/70">
               {order.delivery_address.city}, {order.delivery_address.country}
             </p>
           </div>

@@ -69,7 +69,7 @@ const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) =>
   return (
     <li
       key={vehicle._id}
-      className="flex flex-col p-4 hover:bg-gray-100 cursor-pointer"
+      className="flex flex-col p-4 bg-base-300 rounded-lg cursor-pointer"
       onClick={() => onSelect && onSelect(vehicle._id)}
     >
       <div className="flex flex-1 flex-row justify-between">

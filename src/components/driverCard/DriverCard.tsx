@@ -57,7 +57,7 @@ const DriverCard = ({
   return (
     <div
       key={driver._id}
-      className="card cursor-pointer bg-base-100 shadow-lg border border-gray-200 p-6 flex flex-col items-center justify-between space-y-4 transition-transform hover:scale-105"
+      className="card cursor-pointer bg-base-300 shadow-lg p-6 flex flex-col items-center justify-between space-y-4 transition-transform hover:scale-105"
       onClick={() => onSelect && onSelect(driver._id)}
     >
       <div className="w-20 h-20 rounded-full flex items-center justify-center text-xl font-bold text-white bg-blue-500">
