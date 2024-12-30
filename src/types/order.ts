@@ -12,6 +12,7 @@ export interface LoadDetails {
 }
 
 export interface Address {
+    coordinates: any;
     _id: string;
     street: string;
     city: string;
