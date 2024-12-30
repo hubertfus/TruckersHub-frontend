@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { UserProvider } from './ctx/UserContext';  
 import DispatcherViewPage from "./pages/dispatcherViewPage/DispatcherViewPage.tsx";
 import UserDetails from "./pages/userDetails/UserDetails.tsx";
+import OrderDetails from "./pages/orderDetails/OrderDetails.tsx";
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                         <Route path="/driver" element={<DriverViewPage />} />
                         <Route path="/dispatcher" element={<DispatcherViewPage />} />
                         <Route path="/users/:id" element={<UserDetails />} />
+                        <Route path="/order/:id" element={<OrderDetails />} />
                     </Routes>
                 </div>
             </Router>

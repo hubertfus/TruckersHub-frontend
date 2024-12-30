@@ -11,6 +11,7 @@ import AddressDetails from "./AddressDetails.tsx";
 import OrderSummary from "./OrderSummary.tsx";
 import ActionButtons from "./ActionButtons.tsx";
 import EditOrderDialog from "../dialog/EditOrderDialog.tsx";
+import { Link } from "react-router-dom";
 
 export type orderCardActions = "click" | "cancel" | "accept" | "complete" | "delete" | "assignDriver" | "assignVehicle" | "editOrder" | "changeDriver" | "changeVehicle";
 
@@ -68,9 +69,9 @@ function OrderCard(props: OrderCardProps) {
         </span>
 
         <div className="bg-base-300 flex flex-col gap-3 p-4 rounded shadow-md w-60" onClick={()=>props.onAction("click",props.order._id)}>
-          <div className="text-lg font-semibold text-primary">
+          <Link to={`/order/${props.order._id}`} className="text-lg font-semibold text-primary">
             Order #{props.order.order_number}
-          </div>
+          </Link>
           <LoadDetails
             type={props.order.load_details.type}
             weight={props.order.load_details.weight}
