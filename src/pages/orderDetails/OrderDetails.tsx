@@ -160,59 +160,59 @@ function OrderDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4 sm:p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900">
-                <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold">Order Details</h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {orderData.order_number}
-                </p>
+    <div className="min-h-screen bg-base-200 flex items-center justify-center py-8 px-4">
+      <div className="card w-full max-w-4xl shadow-xl bg-base-100">
+        <div className="card-header flex items-center justify-between p-4 border-b border-base-300">
+          <div className="flex items-center gap-4">
+            <div className="avatar placeholder">
+              <div className="bg-primary text-primary-content rounded-full w-12 h-12 flex items-center justify-center">
+                <Package className="w-6 h-6" />
               </div>
             </div>
-            <span className="ml-auto px-4 py-2 rounded-full bg-accent text-accent-content capitalize">
-              {orderData.status.replace("_", " ")}
-            </span>
+            <div>
+              <h2 className="card-title text-lg font-bold">
+                {orderData.order_number}
+              </h2>
+              <p className="text-sm text-base-content/70">
+                {orderData.status.replace("_", " ")}
+              </p>
+            </div>
           </div>
+          <div
+            className={`badge p-4 ${
+              orderData.status === "completed"
+                ? "bg-green-500"
+                : "bg-blue-600 text-white"
+            }`}
+          >
+            {orderData.status.replace("_", " ")}
+          </div>
+        </div>
 
-          <div className="p-6">
-            <h2 className="text-lg font-semibold mb-4">Load Information</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="card-body">
+          <h2 className="text-lg font-semibold mb-4">Load Information</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="stat">
+              <div className="stat-title">Type</div>
+              <div>{orderData.load_details.type}</div>
+            </div>
+            <div className="stat">
+              <div className="stat-title">Weight</div>
+              <div>{orderData.load_details.weight} kg</div>
+            </div>
+            <div className="stat">
+              <div className="stat-title">Dimensions</div>
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Type</p>
-                <p className="font-medium mt-1">
-                  {orderData.load_details.type}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Weight
-                </p>
-                <p className="font-medium mt-1">
-                  {orderData.load_details.weight}kg
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Dimensions
-                </p>
-                <p className="font-medium mt-1">
-                  {orderData.load_details.dimensions.length}m ×{" "}
-                  {orderData.load_details.dimensions.width}m ×{" "}
-                  {orderData.load_details.dimensions.height}m
-                </p>
+                {orderData.load_details.dimensions.length}m ×{" "}
+                {orderData.load_details.dimensions.width}m ×{" "}
+                {orderData.load_details.dimensions.height}m
               </div>
             </div>
           </div>
 
-          <hr className="border-gray-200 dark:border-gray-700" />
+          <div className="divider"></div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <LocationInfo type="pickup" address={orderData.pickup_address} />
             <LocationInfo
               type="delivery"
@@ -220,77 +220,61 @@ function OrderDetails() {
             />
           </div>
 
-          <hr className="border-gray-200 dark:border-gray-700" />
+          <div className="divider"></div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 p-6">
-            <div className="flex items-start gap-3">
-              <div className="text-gray-500 dark:text-gray-400 mt-0.5">
-                <User className="w-5 h-5" />
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Driver
-                </p>
-                <Link
-                  to={`/users/${orderData.assigned_driver}`}
-                  className="font-medium"
-                >
-                  {orderData.driver_info}
-                </Link>
-              </div>
+          <h2 className="text-lg font-semibold mb-4">Driver and Vehicle</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <p className="font-semibold flex gap-2">
+                <User className="w-6 h-6" />
+                Driver
+              </p>
+              <Link to={`/users/${orderData.assigned_driver}`} className="link">
+                {orderData.driver_info}
+              </Link>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="text-gray-500 dark:text-gray-400 mt-0.5">
-                <Truck className="w-5 h-5" />
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Vehicle
-                </p>
-                <p className="font-medium">{orderData.vehicle_info}</p>
-              </div>
+            <div>
+              <p className="font-semibold flex gap-2">
+                <Truck className="w-6 h-6" />
+                Vehicle
+              </p>
+              <p>{orderData.vehicle_info}</p>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="text-gray-500 dark:text-gray-400 mt-0.5">
-                <CalendarClock className="w-5 h-5" />
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Estimated Delivery
-                </p>
-                <p className="font-medium">
-                  {orderData.estimated_delivery_time}
-                </p>
-              </div>
+            <div>
+              <p className="font-semibold flex gap-2">
+                <CalendarClock className="w-6 h-6" />
+                Estimated Delivery
+              </p>
+              <p>{orderData.estimated_delivery_time}</p>
             </div>
           </div>
+        </div>
 
-          <div className="p-6 ">
-            <h2 className="text-lg font-semibold mb-4">Route</h2>
-            <div className="h-96 z-20">
-              <MapContainer
-                center={[pickupCoordinates.lat, pickupCoordinates.lon]}
-                zoom={13}
-                style={{ height: "100%", width: "100%" }}
-              >
-                <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        <div className="card-body">
+          <h2 className="text-lg font-semibold mb-4">Route</h2>
+          <div className="h-96">
+            <MapContainer
+              center={[pickupCoordinates.lat, pickupCoordinates.lon]}
+              zoom={13}
+              style={{ height: "100%", width: "100%" }}
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              <Marker
+                position={[pickupCoordinates.lat, pickupCoordinates.lon]}
+              />
+              <Marker
+                position={[deliveryCoordinates.lat, deliveryCoordinates.lon]}
+              />
+              {route && (
+                <Polyline
+                  positions={route.map((coord) => [coord.lat, coord.lon])}
+                  pathOptions={{ color: "blue" }}
                 />
-                <Marker
-                  position={[pickupCoordinates.lat, pickupCoordinates.lon]}
-                />
-                <Marker
-                  position={[deliveryCoordinates.lat, deliveryCoordinates.lon]}
-                />
-                {route && (
-                  <Polyline
-                    positions={route.map((coord) => [coord.lat, coord.lon])}
-                    pathOptions={{ color: "blue" }}
-                  />
-                )}
-              </MapContainer>
-            </div>
+              )}
+            </MapContainer>
           </div>
         </div>
       </div>

@@ -74,9 +74,6 @@ function Header() {
           <li>
             <Link to="/">Home</Link>
           </li>
-          <li>
-            <a href="#">Profile</a>
-          </li>
           <li className="flex-1 justify-end" onClick={logout}>
             <a href="#">Logout</a>
           </li>

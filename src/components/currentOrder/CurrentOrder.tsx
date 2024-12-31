@@ -14,7 +14,7 @@ export function CurrentOrder(order: Order) {
         </div>
         <div>
           <h3 className="text-xl font-bold text-base-content">Current Order</h3>
-          <p className="text-sm text-base-content/70">{order.order_number}</p>
+          <p className="text-sm ">{order.order_number}</p>
         </div>
         <span className="ml-auto px-4 py-2 rounded-full bg-accent text-accent-content capitalize">
           {order.status.replace("_", " ")}
@@ -27,13 +27,9 @@ export function CurrentOrder(order: Order) {
             <h4 className="font-semibold text-base-content mb-2">
               Load Details
             </h4>
-            <p className="text-base-content/70">
-              Type: {order.load_details.type}
-            </p>
-            <p className="text-base-content/70">
-              Weight: {order.load_details.weight}kg
-            </p>
-            <p className="text-base-content/70">
+            <p>Type: {order.load_details.type}</p>
+            <p>Weight: {order.load_details.weight}kg</p>
+            <p>
               Dimensions: {order.load_details.dimensions.length}m ×{" "}
               {order.load_details.dimensions.width}m ×{" "}
               {order.load_details.dimensions.height}m
@@ -50,15 +46,11 @@ export function CurrentOrder(order: Order) {
               </h4>
             </div>
             <div className="pl-7">
-              <p className="text-base-content/70">
-                {order.pickup_address.street}
-              </p>
-              <p className="text-base-content/70">
+              <p>{order.pickup_address.street}</p>
+              <p>
                 {order.pickup_address.city}, {order.pickup_address.zip_code}
               </p>
-              <p className="text-base-content/70">
-                {order.pickup_address.country}
-              </p>
+              <p>{order.pickup_address.country}</p>
             </div>
           </div>
 
@@ -70,15 +62,11 @@ export function CurrentOrder(order: Order) {
               </h4>
             </div>
             <div className="pl-7">
-              <p className="text-base-content/70">
-                {order.delivery_address.street}
-              </p>
-              <p className="text-base-content/70">
+              <p>{order.delivery_address.street}</p>
+              <p>
                 {order.delivery_address.city}, {order.delivery_address.zip_code}
               </p>
-              <p className="text-base-content/70">
-                {order.delivery_address.country}
-              </p>
+              <p>{order.delivery_address.country}</p>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
-import { Truck, MapPin } from 'lucide-react';
-import { Vehicle } from '../../pages/userDetails/UserDetails';
+import { Truck, MapPin } from "lucide-react";
+import { Vehicle } from "../../pages/userDetails/UserDetails";
 
 export function VehicleInfo(vehicle: Vehicle) {
   return (
@@ -13,28 +13,33 @@ export function VehicleInfo(vehicle: Vehicle) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <p className="text-base-content/70">
-            <span className="font-semibold">Vehicle:</span> {vehicle.brand} {vehicle.model}
+          <p>
+            <span className="font-semibold">Vehicle:</span> {vehicle.brand}{" "}
+            {vehicle.model}
           </p>
-          <p className="text-base-content/70">
-            <span className="font-semibold">License Plate:</span> {vehicle.license_plate}
+          <p>
+            <span className="font-semibold">License Plate:</span>{" "}
+            {vehicle.license_plate}
           </p>
-          <p className="text-base-content/70">
+          <p>
             <span className="font-semibold">Year:</span> {vehicle.year}
           </p>
         </div>
         <div>
-          <p className="text-base-content/70">
-            <span className="font-semibold">Capacity:</span> {vehicle.capacity.weight}kg
+          <p>
+            <span className="font-semibold">Capacity:</span>{" "}
+            {vehicle.capacity.weight}kg
           </p>
-          <p className="text-base-content/70">
-            <span className="font-semibold">Dimensions:</span> {vehicle.capacity.volume.length}m × {vehicle.capacity.volume.width}m ×{' '}
-            {vehicle.capacity.volume.height}m
+          <p>
+            <span className="font-semibold">Dimensions:</span>{" "}
+            {vehicle.capacity.volume.length}m × {vehicle.capacity.volume.width}m
+            × {vehicle.capacity.volume.height}m
           </p>
-          <div className="flex items-center space-x-2 text-base-content/70">
+          <div className="flex items-center space-x-2 ">
             <MapPin className="w-4 h-4 text-info" />
             <span>
-              {vehicle.current_location.latitude.toFixed(2)}°N, {vehicle.current_location.longitude.toFixed(2)}°E
+              {vehicle.current_location.latitude.toFixed(2)}°N,{" "}
+              {vehicle.current_location.longitude.toFixed(2)}°E
             </span>
           </div>
         </div>
