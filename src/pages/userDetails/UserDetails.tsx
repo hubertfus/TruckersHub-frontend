@@ -15,12 +15,23 @@ export interface Order {
     weight: number;
     dimensions: { length: number; width: number; height: number };
   };
-  pickup_address: { street: string; city: string; zip_code: string; country: string };
-  delivery_address: { street: string; city: string; zip_code: string; country: string };
-  created_at: string; 
+  pickup_address: {
+    street: string;
+    city: string;
+    zip_code: string;
+    country: string;
+  };
+  delivery_address: {
+    street: string;
+    city: string;
+    zip_code: string;
+    country: string;
+  };
+  created_at: string;
 }
 
 export interface Vehicle {
+  _id: string;
   license_plate: string;
   model: string;
   brand: string;
@@ -54,7 +65,9 @@ function UserDetails() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const { data } = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/users/${id}`);
+        const { data } = await axios.get(
+          `http://${import.meta.env.VITE_API_ADDRESS}/users/${id}`
+        );
         setUserData(data.user);
       } catch (err) {
         console.error("Error fetching user data:", err);
@@ -70,7 +83,9 @@ function UserDetails() {
   if (loading) {
     return (
       <div className="min-h-screen bg-base-200 flex items-center justify-center">
-        <p className="text-lg font-semibold text-base-content/70">Loading user details...</p>
+        <p className="text-lg font-semibold text-base-content/70">
+          Loading user details...
+        </p>
       </div>
     );
   }
@@ -86,7 +101,9 @@ function UserDetails() {
   if (!userData) {
     return (
       <div className="min-h-screen bg-base-200 flex items-center justify-center">
-        <p className="text-lg font-semibold text-base-content/70">No user data available.</p>
+        <p className="text-lg font-semibold text-base-content/70">
+          No user data available.
+        </p>
       </div>
     );
   }
@@ -97,8 +114,12 @@ function UserDetails() {
         <UserProfile {...userData} />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {userData.current_order && <CurrentOrder {...userData.current_order} />}
-          {userData.current_vehicle && <VehicleInfo {...userData.current_vehicle} />}
+          {userData.current_order && (
+            <CurrentOrder {...userData.current_order} />
+          )}
+          {userData.current_vehicle && (
+            <VehicleInfo {...userData.current_vehicle} />
+          )}
         </div>
 
         {userData.completed_or_cancelled_orders && (

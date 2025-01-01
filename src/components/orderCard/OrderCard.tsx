@@ -44,6 +44,13 @@ export type orderCardActions =
   | "changeDriver"
   | "changeVehicle";
 
+export const statusClass = {
+  in_progress: "badge-primary",
+  cancelled: "badge-error",
+  created: "badge-info",
+  completed: "badge-success",
+};
+
 export default function OrderCard(order: OrderProps) {
   const {
     _id,
@@ -66,13 +73,6 @@ export default function OrderCard(order: OrderProps) {
   const driverDialogRef = useRef<HTMLDialogElement>(null);
   const vehicleDialogRef = useRef<HTMLDialogElement>(null);
   const editDialogRef = useRef<HTMLDialogElement>(null);
-
-  const statusClass = {
-    in_progress: "badge-primary",
-    cancelled: "badge-error",
-    created: "badge-info",
-    completed: "badge-success",
-  };
 
   const handleShowModalWithData = async (
     dialogRef: React.RefObject<HTMLDialogElement>,

@@ -7,6 +7,7 @@ import { LocationInfo } from "./LocationInfo";
 import { MapContainer, TileLayer, Marker, Polyline } from "react-leaflet";
 
 import "leaflet/dist/leaflet.css";
+import { statusClass } from "../../components/orderCard/OrderCard";
 
 const GEOAPIFY_API_KEY = "b8568cb9afc64fad861a69edbddb2658";
 
@@ -173,18 +174,12 @@ function OrderDetails() {
               <h2 className="card-title text-lg font-bold">
                 {orderData.order_number}
               </h2>
-              <p className="text-sm text-base-content/70">
+              <p className="text-sm text-primary">
                 {orderData.status.replace("_", " ")}
               </p>
             </div>
           </div>
-          <div
-            className={`badge p-4 ${
-              orderData.status === "completed"
-                ? "bg-green-500"
-                : "bg-blue-600 text-white"
-            }`}
-          >
+          <div className={`badge ${statusClass[orderData.status]} p-4`}>
             {orderData.status.replace("_", " ")}
           </div>
         </div>
@@ -238,7 +233,9 @@ function OrderDetails() {
                 <Truck className="w-6 h-6" />
                 Vehicle
               </p>
-              <p>{orderData.vehicle_info}</p>
+              <Link to={`/vehicle/${orderData.vehicle_id}`}>
+                {orderData.vehicle_info}
+              </Link>
             </div>
             <div>
               <p className="font-semibold flex gap-2">

@@ -1,9 +1,13 @@
 import { Truck, MapPin } from "lucide-react";
 import { Vehicle } from "../../pages/userDetails/UserDetails";
+import { Link } from "react-router-dom";
 
 export function VehicleInfo(vehicle: Vehicle) {
   return (
-    <div className="bg-base-100 rounded-lg shadow-lg p-6 mb-6">
+    <Link
+      to={`/vehicle/${vehicle._id}`}
+      className="bg-base-100 rounded-lg shadow-lg p-6 mb-6"
+    >
       <div className="flex items-center space-x-4 mb-6">
         <div className="bg-primary p-3 rounded-full">
           <Truck className="w-8 h-8 text-primary-content" />
@@ -44,6 +48,6 @@ export function VehicleInfo(vehicle: Vehicle) {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

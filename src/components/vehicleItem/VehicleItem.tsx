@@ -6,7 +6,7 @@ import TextInput from "../textInput/TextInput";
 import { Order } from "../../types/order";
 import axios from "axios";
 import OrderList from "../orderList/OrderList";
-
+import { Link } from "react-router-dom";
 
 interface VehicleItemProps {
   vehicle: Vehicle;
@@ -15,10 +15,15 @@ interface VehicleItemProps {
   onAction?: (action: string, value?: any) => void;
 }
 
-const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) => {
+const VehicleItem = ({
+  vehicle,
+  onSelect,
+  role,
+  onAction,
+}: VehicleItemProps) => {
   const [editedVehicle, setEditedVehicle] = useState<Vehicle>(vehicle);
   const [dialogError, setDialogError] = useState<string | null>(null);
-  const [orders, setOrders] = useState<Order[]>([])
+  const [orders, setOrders] = useState<Order[]>([]);
 
   const handleInputChange = (field: keyof Vehicle, value: string) => {
     setEditedVehicle((prev) => ({
@@ -28,43 +33,48 @@ const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) =>
   };
 
   const handleNestedChange = <
-        T extends keyof Vehicle,
-        K extends keyof Vehicle[T]
-    >(
-        field: T,
-        subField: K,
-        value: any
-    ) => {
-        const fieldValue = editedVehicle[field];
-        
-        if (typeof fieldValue === "object" && fieldValue !== null) {
-            setEditedVehicle((prev) => ({
-                ...prev,
-                [field]: {
-                    ...fieldValue,
-                    [subField]: value,
-                },
-            }));
-        } else {
-            console.error(`Field "${field}" is not an object.`);
-        }
-    };
+    T extends keyof Vehicle,
+    K extends keyof Vehicle[T]
+  >(
+    field: T,
+    subField: K,
+    value: any
+  ) => {
+    const fieldValue = editedVehicle[field];
+
+    if (typeof fieldValue === "object" && fieldValue !== null) {
+      setEditedVehicle((prev) => ({
+        ...prev,
+        [field]: {
+          ...fieldValue,
+          [subField]: value,
+        },
+      }));
+    } else {
+      console.error(`Field "${field}" is not an object.`);
+    }
+  };
 
   const handleSave = () => {
-    if (!editedVehicle.license_plate || !editedVehicle.model || !editedVehicle.brand) {
+    if (
+      !editedVehicle.license_plate ||
+      !editedVehicle.model ||
+      !editedVehicle.brand
+    ) {
       setDialogError("All fields are required.");
       return;
     }
 
-    onAction && onAction("edit",{vehicleId: vehicle._id, editedVehicle});
+    onAction && onAction("edit", { vehicleId: vehicle._id, editedVehicle });
     setDialogError(null);
   };
 
-  const handleAction = async (action: string, value?: any) =>{
-    if(action==="click"){
-      onAction && onAction("assignToOrder",{orderId:value, vehicleId:vehicle._id})
+  const handleAction = async (action: string, value?: any) => {
+    if (action === "click") {
+      onAction &&
+        onAction("assignToOrder", { orderId: value, vehicleId: vehicle._id });
     }
-  }
+  };
 
   return (
     <li
@@ -78,9 +88,12 @@ const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) =>
             <Truck className="w-6 h-6" />
           </div>
           <div>
-            <p className="font-medium">
+            <Link
+              to={`/vehicle/${vehicle._id}`}
+              className="font-medium text-blue-700 underline-offset-4 underline"
+            >
               {vehicle.brand} {vehicle.model}
-            </p>
+            </Link>
             <p className="text-sm text-gray-500">
               License Plate: {vehicle.license_plate}
             </p>
@@ -102,31 +115,39 @@ const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) =>
           <button
             className="btn btn-primary btn-sm w-f"
             onClick={() => {
-                const dialog = document.getElementById("editVehicle");
-                if (dialog && dialog instanceof HTMLDialogElement) {
-                    dialog.showModal();
-                }
+              const dialog = document.getElementById("editVehicle");
+              if (dialog && dialog instanceof HTMLDialogElement) {
+                dialog.showModal();
+              }
             }}
           >
             <Edit className="w-4 h-4 mr-1" />
             Edit
           </button>
-          {!vehicle.isInUse && <button className="btn btn-success btn-sm"
-          onClick={async () => {
-            const dialog = document.getElementById("assignToOrder");
-            if (dialog && dialog instanceof HTMLDialogElement) {
-                dialog.showModal();
-                try {
-                  const {data} = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/orders?role=dispatcher&createdAndWtihNoVehicleAssigned=true`);
-                  setOrders(data.data);
-              } catch (error: any) {
-                  console.error("Error fetching orders:", error);
-              }
-            }
-        }}>
-            <CheckCircle className="w-4 h-4 mr-1" />
-            Assign to Order
-          </button>}
+          {!vehicle.isInUse && (
+            <button
+              className="btn btn-success btn-sm"
+              onClick={async () => {
+                const dialog = document.getElementById("assignToOrder");
+                if (dialog && dialog instanceof HTMLDialogElement) {
+                  dialog.showModal();
+                  try {
+                    const { data } = await axios.get(
+                      `http://${
+                        import.meta.env.VITE_API_ADDRESS
+                      }/orders?role=dispatcher&createdAndWtihNoVehicleAssigned=true`
+                    );
+                    setOrders(data.data);
+                  } catch (error: any) {
+                    console.error("Error fetching orders:", error);
+                  }
+                }
+              }}
+            >
+              <CheckCircle className="w-4 h-4 mr-1" />
+              Assign to Order
+            </button>
+          )}
           <button
             className="btn btn-error btn-sm"
             onClick={() => onAction && onAction("delete", vehicle._id)}
@@ -137,12 +158,8 @@ const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) =>
         </div>
       )}
 
-
-      <Dialog
-        id="assignToOrder"
-        title="Assign to order"
-        closeText="Cancel">
-          <OrderList orders={orders} onAction={handleAction} role=""/>
+      <Dialog id="assignToOrder" title="Assign to order" closeText="Cancel">
+        <OrderList orders={orders} onAction={handleAction} role="" />
       </Dialog>
 
       <Dialog
@@ -192,7 +209,9 @@ const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) =>
           placeholder="Enter weight capacity"
           type="number"
           value={editedVehicle.capacity?.weight || ""}
-          onChange={(e) => handleNestedChange("capacity", "weight", e.target.value)}
+          onChange={(e) =>
+            handleNestedChange("capacity", "weight", e.target.value)
+          }
           min={0}
         />
         <TextInput
@@ -244,7 +263,9 @@ const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) =>
           placeholder="Enter latitude"
           type="number"
           value={editedVehicle.current_location?.latitude || ""}
-          onChange={(e) => handleNestedChange("current_location", "latitude", e.target.value)}
+          onChange={(e) =>
+            handleNestedChange("current_location", "latitude", e.target.value)
+          }
         />
         <TextInput
           label="Longitude"
@@ -252,7 +273,9 @@ const VehicleItem = ({ vehicle, onSelect, role, onAction }: VehicleItemProps) =>
           placeholder="Enter longitude"
           type="number"
           value={editedVehicle.current_location?.longitude || ""}
-          onChange={(e) => handleNestedChange("current_location", "longitude", e.target.value)}
+          onChange={(e) =>
+            handleNestedChange("current_location", "longitude", e.target.value)
+          }
         />
         {dialogError && <p className="text-red-500 mt-2">{dialogError}</p>}
       </Dialog>
