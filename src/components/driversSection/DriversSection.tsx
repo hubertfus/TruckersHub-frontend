@@ -114,6 +114,7 @@ function DriversSection() {
         const { data } = await axios.post(
           `http://${import.meta.env.VITE_API_ADDRESS}/orders/assign-driver`,
           {
+            userId: user?.id,
             orderId: value.orderId,
             driverId: value.driverId,
             dispatcherId: user?.id,

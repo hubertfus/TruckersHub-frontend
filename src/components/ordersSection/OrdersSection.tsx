@@ -118,6 +118,7 @@ function OrdersSection() {
         const { data } = await axios.post(
           `http://${import.meta.env.VITE_API_ADDRESS}/orders/assign-driver`,
           {
+            userId: user?.id,
             orderId: value.orderId,
             driverId: value.driverId,
             dispatcherId: user?.id,
@@ -156,6 +157,7 @@ function OrdersSection() {
         const { data } = await axios.post(
           `http://${import.meta.env.VITE_API_ADDRESS}/orders/assign-vehicle`,
           {
+            userId: user?.id,
             orderId: value.orderId,
             vehicleId: value.vehicleId,
             dispatcherId: user?.id,
@@ -193,6 +195,7 @@ function OrdersSection() {
         const { data } = await axios.put(
           `http://${import.meta.env.VITE_API_ADDRESS}/orders/update`,
           {
+            userId: user?.id,
             orderId: value.orderId,
             updatedOrderData: value.updatedData,
             dispatcherId: user?.id,
@@ -254,7 +257,7 @@ function OrdersSection() {
     try {
       const { data } = await axios.post(
         `http://${import.meta.env.VITE_API_ADDRESS}/orders/create`,
-        newOrder
+        { newOrder: newOrder, userId: user?.id }
       );
       console.log("Order created successfully:", data.data);
 

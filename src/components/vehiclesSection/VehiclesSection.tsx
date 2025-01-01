@@ -175,6 +175,7 @@ function VehiclesSection() {
         const { data } = await axios.post(
           `http://${import.meta.env.VITE_API_ADDRESS}/orders/assign-vehicle`,
           {
+            userId: user?.id,
             orderId: value.orderId,
             vehicleId: value.vehicleId,
             dispatcherId: user?.id,
@@ -185,7 +186,9 @@ function VehiclesSection() {
           { type: "success", message: data.message },
         ]);
 
-        const dialog = document.getElementById("assignToOrder");
+        const dialog = document.getElementById(
+          `assignToOrderV${value.vehicleId}`
+        );
         if (dialog && dialog instanceof HTMLDialogElement) {
           dialog.close();
         }

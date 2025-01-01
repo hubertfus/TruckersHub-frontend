@@ -92,7 +92,10 @@ export default function OrderCard(order: OrderProps) {
   };
 
   return (
-    <div className="card w-96 bg-base-200 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+    <div
+      className="card w-96 bg-base-200 shadow-xl hover:shadow-2xl transition-shadow duration-300"
+      onClick={() => onAction("click", order._id)}
+    >
       <div className="card-body">
         <div className="flex justify-between items-center mb-4">
           <Link to={`/order/${_id}`}>

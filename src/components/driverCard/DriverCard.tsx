@@ -114,9 +114,7 @@ const DriverCard = ({ driver, onSelect, onAction, role }: DriverCardProps) => {
                   dialog.showModal();
                   try {
                     const { data } = await axios.get(
-                      `http://${
-                        import.meta.env.VITE_API_ADDRESS
-                      }/orders?role=dispatcher&createdAndWtihNoVehicleAssigned=true`
+                      `http://${import.meta.env.VITE_API_ADDRESS}/orders`
                     );
                     setOrders(data.data);
                   } catch (error: any) {

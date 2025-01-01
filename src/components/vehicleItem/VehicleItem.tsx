@@ -128,7 +128,9 @@ const VehicleItem = ({
             <button
               className="btn btn-success btn-sm"
               onClick={async () => {
-                const dialog = document.getElementById("assignToOrder");
+                const dialog = document.getElementById(
+                  `assignToOrderV${vehicle._id}`
+                );
                 if (dialog && dialog instanceof HTMLDialogElement) {
                   dialog.showModal();
                   try {
@@ -158,7 +160,11 @@ const VehicleItem = ({
         </div>
       )}
 
-      <Dialog id="assignToOrder" title="Assign to order" closeText="Cancel">
+      <Dialog
+        id={`assignToOrderV${vehicle._id}`}
+        title="Assign to order"
+        closeText="Cancel"
+      >
         <OrderList orders={orders} onAction={handleAction} role="" />
       </Dialog>
 
