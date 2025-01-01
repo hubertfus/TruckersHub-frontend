@@ -9,37 +9,40 @@ import { useUser } from "../../ctx/UserContext";
 import { useNavigate } from "react-router-dom";
 
 function DispatcherViewPage() {
-    const [activeMainTab, setActiveMainTab] = useState<string>("orders");
-    const { user } = useUser();
-    const navigate = useNavigate();
+  const [activeMainTab, setActiveMainTab] = useState<string>("orders");
+  const { user } = useUser();
+  const navigate = useNavigate();
 
-    useEffect(()=>{
-        if (!user) {
-            navigate("/");
-            console.log("User not logged in");
-        }
-    },[user,navigate])
+  useEffect(() => {
+    if (!user) {
+      navigate("/");
+      console.log("User not logged in");
+    }
+  }, [user, navigate]);
 
+  const mainTabs = [
+    { key: "orders", label: "Orders" },
+    { key: "drivers", label: "Drivers" },
+    { key: "vehicles", label: "Vehicles" },
+  ];
 
-    const mainTabs = [
-        { key: "orders", label: "Orders" },
-        { key: "drivers", label: "Drivers" },
-        { key: "vehicles", label: "Vehicles" },
-    ];
+  const content = {
+    orders: <OrdersSection />,
+    drivers: <DriversSection />,
+    vehicles: <VehiclesSection />,
+  };
 
-    const content = {
-        orders: <OrdersSection />,
-        drivers: <DriversSection />,
-        vehicles: <VehiclesSection />,
-    };
-
-    return (
-        <div className="p-5">
-            <h2 className="text-center">Management Panel</h2>
-            <Tabs tabs={mainTabs} activeTab={activeMainTab} onTabChange={setActiveMainTab} />
-            <TabContent activeTab={activeMainTab} content={content} />
-        </div>
-    );
+  return (
+    <div className="p-5">
+      <h2 className="text-center">Management Panel</h2>
+      <Tabs
+        tabs={mainTabs}
+        activeTab={activeMainTab}
+        onTabChange={setActiveMainTab}
+      />
+      <TabContent activeTab={activeMainTab} content={content} />
+    </div>
+  );
 }
 
 export default DispatcherViewPage;

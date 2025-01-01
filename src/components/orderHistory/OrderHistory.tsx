@@ -1,6 +1,6 @@
-import { History } from 'lucide-react';
-import { OrderHistoryItem } from './OrderHistoryItem';
-import { Order } from '../../pages/userDetails/UserDetails';
+import { History } from "lucide-react";
+import { OrderHistoryItem } from "./OrderHistoryItem";
+import { Order } from "../../pages/userDetails/UserDetails";
 
 type OrderHistoryProps = {
   orders: Order[];

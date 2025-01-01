@@ -11,24 +11,19 @@ interface DriverCardProps {
   driver: any;
   onSelect?: (userId: string) => void;
   onAction?: (action: string, value?: any) => void;
-  role: Pick<User, "role">["role"]
+  role: Pick<User, "role">["role"];
 }
 
-const DriverCard = ({
-  driver,
-  onSelect,
-  onAction,
-  role
-}: DriverCardProps) => {
-  const driverName = driver.name || '';
+const DriverCard = ({ driver, onSelect, onAction, role }: DriverCardProps) => {
+  const driverName = driver.name || "";
   const [editedDriver, setEditedDriver] = useState({
-    name: driver.name || '',
-    email: driver.email || '',
-    phone: driver.phone || '',
-    license_number: driver.license_number || '',
+    name: driver.name || "",
+    email: driver.email || "",
+    phone: driver.phone || "",
+    license_number: driver.license_number || "",
   });
   const [dialogError, setDialogError] = useState<string | null>(null);
-  const [orders, setOrders] = useState<Order[]>([])
+  const [orders, setOrders] = useState<Order[]>([]);
 
   const handleInputChange = (field: string, value: string) => {
     setEditedDriver((prev) => ({
@@ -38,21 +33,28 @@ const DriverCard = ({
   };
 
   const handleSave = () => {
-    if (!editedDriver.name || !editedDriver.email || !editedDriver.phone || !editedDriver.license_number) {
+    if (
+      !editedDriver.name ||
+      !editedDriver.email ||
+      !editedDriver.phone ||
+      !editedDriver.license_number
+    ) {
       setDialogError("All fields are required.");
       return;
     }
 
-    onAction && onAction("edit",{editedDriver:editedDriver, driverId: driver._id})
+    onAction &&
+      onAction("edit", { editedDriver: editedDriver, driverId: driver._id });
 
-    setDialogError(null); 
+    setDialogError(null);
   };
 
-  const handleAction = async (action: string, value?: any) =>{
-    if(action==="click"){
-      onAction && onAction("assignToOrder",{orderId:value, driverId: driver._id})
+  const handleAction = async (action: string, value?: any) => {
+    if (action === "click") {
+      onAction &&
+        onAction("assignToOrder", { orderId: value, driverId: driver._id });
     }
-  }
+  };
 
   return (
     <div
@@ -68,7 +70,9 @@ const DriverCard = ({
       </div>
 
       <div className="text-center space-y-2">
-        <Link to={`/users/${driver._id}`}><h2 className="text-xl font-semibold text-blue-600">{driverName}</h2></Link>
+        <Link to={`/users/${driver._id}`}>
+          <h2 className="text-xl font-semibold text-blue-600">{driverName}</h2>
+        </Link>
         <p className="text-sm text-gray-500">
           License: {driver.license_number || "N/A"}
         </p>
@@ -78,49 +82,67 @@ const DriverCard = ({
 
       <div className="flex items-center space-x-2">
         <span
-          className={`badge ${driver.availability ? "badge-success" : "badge-error"} text-sm`}
+          className={`badge ${
+            driver.availability ? "badge-success" : "badge-error"
+          } text-sm`}
         >
           {driver.availability ? "Available" : "In Use"}
         </span>
       </div>
 
-      {role === "dispatcher" && <div className="flex flex-wrap justify-evenly gap-1 mt-4">
-        <button
-          className="btn btn-primary btn-sm w-full"
-          onClick={async () => {
-            const dialog = document.getElementById(`editDriver${driver._id}`);
-            if (dialog && dialog instanceof HTMLDialogElement) {
-              dialog.showModal();
-            }
-          }}
-        >
-          Edit
-        </button>
-        {driver.availability && <button className="btn btn-success btn-sm w-full" onClick={async () => {
-            const dialog = document.getElementById(`assignToOrder${driver._id}`);
-            if (dialog && dialog instanceof HTMLDialogElement) {
+      {role === "dispatcher" && (
+        <div className="flex flex-wrap justify-evenly gap-1 mt-4">
+          <button
+            className="btn btn-primary btn-sm w-full"
+            onClick={async () => {
+              const dialog = document.getElementById(`editDriver${driver._id}`);
+              if (dialog && dialog instanceof HTMLDialogElement) {
                 dialog.showModal();
-                try {
-                  const {data} = await axios.get(`http://${import.meta.env.VITE_API_ADDRESS}/orders?role=dispatcher&createdAndWtihNoVehicleAssigned=true`);
-                  setOrders(data.data);
-              } catch (error: any) {
-                  console.error("Error fetching orders:", error);
               }
-            }
-        }}>
-          Assign to Order
-        </button>}
-        <button className="btn btn-error btn-sm w-full" onClick={()=> onAction && onAction("delete",driver._id)}>
-          Delete
-        </button>
-      </div>}
-
+            }}
+          >
+            Edit
+          </button>
+          {driver.availability && (
+            <button
+              className="btn btn-success btn-sm w-full"
+              onClick={async () => {
+                const dialog = document.getElementById(
+                  `assignToOrder${driver._id}`
+                );
+                if (dialog && dialog instanceof HTMLDialogElement) {
+                  dialog.showModal();
+                  try {
+                    const { data } = await axios.get(
+                      `http://${
+                        import.meta.env.VITE_API_ADDRESS
+                      }/orders?role=dispatcher&createdAndWtihNoVehicleAssigned=true`
+                    );
+                    setOrders(data.data);
+                  } catch (error: any) {
+                    console.error("Error fetching orders:", error);
+                  }
+                }
+              }}
+            >
+              Assign to Order
+            </button>
+          )}
+          <button
+            className="btn btn-error btn-sm w-full"
+            onClick={() => onAction && onAction("delete", driver._id)}
+          >
+            Delete
+          </button>
+        </div>
+      )}
 
       <Dialog
         id={`assignToOrder${driver._id}`}
         title="Assign to order"
-        closeText="Cancel">
-          <OrderList orders={orders} onAction={handleAction} role=""/>
+        closeText="Cancel"
+      >
+        <OrderList orders={orders} onAction={handleAction} role="" />
       </Dialog>
 
       <Dialog

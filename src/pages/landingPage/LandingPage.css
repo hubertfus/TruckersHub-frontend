@@ -1,6 +1,6 @@
 .hero-text {
-    color: #a6adbb;
+  color: #a6adbb;
 }
 .hero {
-    min-height: calc(100vh - 64px);
+  min-height: calc(100vh - 64px);
 }

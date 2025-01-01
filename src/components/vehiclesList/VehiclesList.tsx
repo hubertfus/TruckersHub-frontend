@@ -8,7 +8,12 @@ interface VehiclesListProps {
   onAction?: (action: string, value?: any) => void;
 }
 
-const VehiclesList = ({ vehicles, onSelect, role = "driver", onAction }: VehiclesListProps) => {
+const VehiclesList = ({
+  vehicles,
+  onSelect,
+  role = "driver",
+  onAction,
+}: VehiclesListProps) => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-semibold mb-6 text-center">Vehicle List</h1>

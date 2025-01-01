@@ -175,13 +175,13 @@ function VehicleDetails() {
                 <div>
                   <p className="text-base-content/70">Created At:</p>
                   <p className="text-base-content font-bold">
-                    {new Date(vehicle.created_at).toLocaleString()}
+                    {new Date(vehicle.created_at ?? "").toLocaleString()}
                   </p>
                 </div>
                 <div>
                   <p className="text-base-content/70">Last Updated:</p>
                   <p className="text-base-content font-bold">
-                    {new Date(vehicle.updated_at).toLocaleString()}
+                    {new Date(vehicle.updated_at ?? "").toLocaleString()}
                   </p>
                 </div>
               </div>

@@ -1,8 +1,8 @@
-import { useState, forwardRef } from 'react';
+import { useState, forwardRef } from "react";
 import Dialog from "../dialog/Dialog.tsx";
 import { Order } from "../../types/order.ts";
-import TextInput from '../textInput/TextInput.tsx';
-import DatePicker from '../datePicker/DatePicker.tsx'; 
+import TextInput from "../textInput/TextInput.tsx";
+import DatePicker from "../datePicker/DatePicker.tsx";
 
 interface EditOrderDialogProps {
   order: Order;
@@ -28,10 +28,10 @@ const EditOrderDialog = forwardRef<HTMLDialogElement, EditOrderDialogProps>(
       deliveryZip: order.delivery_address.zip_code,
       deliveryCountry: order.delivery_address.country,
       estimatedDeliveryTime: order.estimated_delivery_time
-        ? typeof order.estimated_delivery_time === 'string'
-          ? order.estimated_delivery_time.split("T")[0]  
-          : new Date(order.estimated_delivery_time).toISOString().split("T")[0]  
-        : "", 
+        ? typeof order.estimated_delivery_time === "string"
+          ? order.estimated_delivery_time.split("T")[0]
+          : new Date(order.estimated_delivery_time).toISOString().split("T")[0]
+        : "",
       status: order.status,
       createdAt: order.created_at,
       updatedAt: order.updated_at,
@@ -73,22 +73,34 @@ const EditOrderDialog = forwardRef<HTMLDialogElement, EditOrderDialogProps>(
           assigned_driver: null,
           vehicle_id: null,
           estimated_delivery_time: orderData.estimatedDeliveryTime
-            ? new Date(orderData.estimatedDeliveryTime)  
+            ? new Date(orderData.estimatedDeliveryTime)
             : null,
-          created_at: orderData.createdAt ? new Date(orderData.createdAt) : new Date(),
-          updated_at: new Date(), 
+          created_at: orderData.createdAt
+            ? new Date(orderData.createdAt)
+            : new Date(),
+          updated_at: new Date(),
         };
 
-        onAction("editOrder", { orderId: order._id, updatedData: updatedOrderData });
+        onAction("editOrder", {
+          orderId: order._id,
+          updatedData: updatedOrderData,
+        });
         closeDialog();
       } catch (error) {
         console.error("Error saving the order:", error);
       }
     };
 
-
     return (
-      <Dialog ref={ref} id="editOrderDialog" title="Edit Order" closeText="Cancel" acceptText="Save" onAccept={handleSave} onClose={closeDialog}>
+      <Dialog
+        ref={ref}
+        id="editOrderDialog"
+        title="Edit Order"
+        closeText="Cancel"
+        acceptText="Save"
+        onAccept={handleSave}
+        onClose={closeDialog}
+      >
         <TextInput
           label="Order number:"
           name="orderNumber"
@@ -96,7 +108,7 @@ const EditOrderDialog = forwardRef<HTMLDialogElement, EditOrderDialogProps>(
           onChange={(e) => handleInputChange("orderNumber", e.target.value)}
           required
         />
-        
+
         <h2 className="font-bold text-center pt-8">Load Details</h2>
         <TextInput
           label="Type"
@@ -112,7 +124,7 @@ const EditOrderDialog = forwardRef<HTMLDialogElement, EditOrderDialogProps>(
           onChange={(e) => handleInputChange("orderDtWeight", e.target.value)}
           required
         />
-        
+
         <h3 className="font-bold text-center pt-8">Dimensions</h3>
         <div className="flex space-x-4">
           <TextInput
@@ -167,7 +179,7 @@ const EditOrderDialog = forwardRef<HTMLDialogElement, EditOrderDialogProps>(
           onChange={(e) => handleInputChange("pickupCountry", e.target.value)}
           required
         />
-        
+
         <TextInput
           label="Delivery Street"
           name="deliveryStreet"
