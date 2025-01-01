@@ -128,7 +128,8 @@ function VehiclesSection() {
     if (action === "delete") {
       try {
         const { data } = await axios.delete(
-          `http://${import.meta.env.VITE_API_ADDRESS}/vehicles/delete/${value}`
+          `http://${import.meta.env.VITE_API_ADDRESS}/vehicles/delete/${value}`,
+          { data: { userId: user?.id } }
         );
         setToasts((prev) => [
           ...prev,
@@ -150,6 +151,7 @@ function VehiclesSection() {
             value.vehicleId
           }`,
           {
+            userId: user?.id,
             ...value.editedVehicle,
           }
         );

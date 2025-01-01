@@ -205,7 +205,6 @@ function OrdersSection() {
           ...prev,
           { type: "success", message: data.message },
         ]);
-        console.log(data);
         setData((prev: Order[]) =>
           prev.map((order) =>
             order._id === value.orderId
@@ -259,7 +258,6 @@ function OrdersSection() {
         `http://${import.meta.env.VITE_API_ADDRESS}/orders/create`,
         { newOrder: newOrder, userId: user?.id }
       );
-      console.log("Order created successfully:", data.data);
 
       const dialog = document.getElementById("order");
       if (dialog && dialog instanceof HTMLDialogElement) {
