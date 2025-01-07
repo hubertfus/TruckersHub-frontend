@@ -152,7 +152,7 @@ export default function OrderCard(order: OrderProps) {
           </Link>
           <div className="flex items-center gap-2">
             <Truck className="w-5 h-5 text-gray-600" />
-            <span>{vehicle_info}</span>
+            <span>{vehicle_info ?? "No vehicle Assigned"}</span>
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="w-5 h-5 text-gray-600" />

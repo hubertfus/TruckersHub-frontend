@@ -88,7 +88,7 @@ function VehiclesSection() {
       }
       const { data } = await axios.post(
         `http://${import.meta.env.VITE_API_ADDRESS}/vehicles/add-vehicle`,
-        newVehicle
+        { ...newVehicle, userId: user?.id }
       );
       setToasts((prev) => [
         ...prev,
@@ -98,7 +98,7 @@ function VehiclesSection() {
       const response = await axios.get(
         `http://${import.meta.env.VITE_API_ADDRESS}/vehicles`
       );
-      setData(response.data);
+      setData(response.data.vehicles);
       const dialog = document.getElementById("addVehicle");
       if (dialog && dialog instanceof HTMLDialogElement) {
         dialog.close();

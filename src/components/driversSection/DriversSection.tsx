@@ -96,7 +96,8 @@ function DriversSection() {
     if (action === "delete") {
       try {
         const { data } = await axios.delete(
-          `http://${import.meta.env.VITE_API_ADDRESS}/users/delete/${value}`
+          `http://${import.meta.env.VITE_API_ADDRESS}/users/delete/${value}`,
+          { data: { userId: user?.id } }
         );
         setToasts((prev) => [
           ...prev,

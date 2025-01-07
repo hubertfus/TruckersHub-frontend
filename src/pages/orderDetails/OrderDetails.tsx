@@ -233,7 +233,10 @@ function OrderDetails() {
                 <Truck className="w-6 h-6" />
                 Vehicle
               </p>
-              <Link to={`/vehicle/${orderData.vehicle_id}`}>
+              <Link
+                className="underline"
+                to={`/vehicle/${orderData.vehicle_id}`}
+              >
                 {orderData.vehicle_info}
               </Link>
             </div>

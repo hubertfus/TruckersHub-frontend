@@ -1,5 +1,5 @@
 import axios from "axios";
-import { MapPin, Calendar, Wrench, Truck, Clock } from "lucide-react";
+import { MapPin, Truck, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Vehicle } from "../../types/vehicle";
@@ -138,31 +138,6 @@ function VehicleDetails() {
                   </span>
                 </p>
               </div>
-            </div>
-          </div>
-
-          <div className="card bg-base-100 shadow-xl md:col-span-2">
-            <div className="card-body">
-              <h2 className="card-title text-xl flex items-center mb-4">
-                <Wrench className="w-5 h-5 mr-2" /> Maintenance Schedule
-              </h2>
-              {vehicle.maintenance_schedule.map((maintenance, index) => (
-                <div
-                  key={index}
-                  className="border-l-4 border-primary pl-4 py-2"
-                >
-                  <div className="flex items-center text-base-content/70">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    {new Date(maintenance.date).toLocaleDateString()}
-                  </div>
-                  <p className="font-medium text-base-content">
-                    {maintenance.service_type}
-                  </p>
-                  <p className="text-base-content/70">
-                    {maintenance.description}
-                  </p>
-                </div>
-              ))}
             </div>
           </div>
 

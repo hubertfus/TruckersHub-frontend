@@ -144,7 +144,7 @@ function RegisterPage() {
                 label="Phone Number"
                 name="phone"
                 type="tel"
-                placeholder="+1 234 567 890"
+                placeholder="1234 567 89"
                 value={formData.phone}
                 onChange={handleInputChange}
                 error={errors.phone}

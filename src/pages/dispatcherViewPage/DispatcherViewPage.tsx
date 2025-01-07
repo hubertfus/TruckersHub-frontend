@@ -16,7 +16,6 @@ function DispatcherViewPage() {
   useEffect(() => {
     if (!user) {
       navigate("/");
-      console.log("User not logged in");
     }
   }, [user, navigate]);
 

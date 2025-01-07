@@ -45,7 +45,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   ];
 
   const handleDateChange = (day: number) => {
-    const date = new Date(currentYear, currentMonth, day);
+    const date = new Date(currentYear, currentMonth, day + 1);
     const formattedDate = date.toISOString().split("T")[0];
     setSelectedDate(formattedDate);
     onChange(formattedDate);
