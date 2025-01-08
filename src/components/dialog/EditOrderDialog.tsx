@@ -122,6 +122,7 @@ const EditOrderDialog = forwardRef<HTMLDialogElement, EditOrderDialogProps>(
           name="orderDtWeight"
           value={orderData.orderDtWeight}
           onChange={(e) => handleInputChange("orderDtWeight", e.target.value)}
+          min={0}
           required
         />
 
@@ -132,6 +133,7 @@ const EditOrderDialog = forwardRef<HTMLDialogElement, EditOrderDialogProps>(
             name="orderDtLength"
             value={orderData.orderDtLength}
             onChange={(e) => handleInputChange("orderDtLength", e.target.value)}
+            min={0}
             required
           />
           <TextInput
@@ -139,6 +141,7 @@ const EditOrderDialog = forwardRef<HTMLDialogElement, EditOrderDialogProps>(
             name="orderDtWidth"
             value={orderData.orderDtWidth}
             onChange={(e) => handleInputChange("orderDtWidth", e.target.value)}
+            min={0}
             required
           />
           <TextInput
@@ -146,6 +149,7 @@ const EditOrderDialog = forwardRef<HTMLDialogElement, EditOrderDialogProps>(
             name="orderDtHeight"
             value={orderData.orderDtHeight}
             onChange={(e) => handleInputChange("orderDtHeight", e.target.value)}
+            min={0}
             required
           />
         </div>
