@@ -59,40 +59,38 @@ function DriversSection() {
 
   const handleAction = async (action: string, value?: any) => {
     if (action === "edit") {
-      if (action === "edit") {
-        try {
-          const { data } = await axios.put(
-            `http://${import.meta.env.VITE_API_ADDRESS}/users/edit/${
-              value.driverId
-            }`,
-            {
-              userId: user?.id,
-              ...value.editedDriver,
-            }
-          );
-          setToasts((prev) => [
-            ...prev,
-            { type: "success", message: data.message },
-          ]);
+      try {
+        const { data } = await axios.put(
+          `http://${import.meta.env.VITE_API_ADDRESS}/users/edit/${
+            value.driverId
+          }`,
+          {
+            userId: user?.id,
+            ...value.editedDriver,
+          }
+        );
+        setToasts((prev) => [
+          ...prev,
+          { type: "success", message: data.message },
+        ]);
 
-          setData((prev: any) =>
-            prev.map((driver: any) =>
-              driver._id === value.driverId
-                ? {
-                    ...driver,
-                    email: value.editedDriver.email,
-                    license_number: value.editedDriver.license_number,
-                    name: value.editedDriver.name,
-                    phone: value.editedDriver.phone,
-                  }
-                : driver
-            )
-          );
-        } catch (error) {
-          console.error("Error while deleting vehicle:", error);
-        }
-        return;
+        setData((prev: any) =>
+          prev.map((driver: any) =>
+            driver._id === value.driverId
+              ? {
+                  ...driver,
+                  email: value.editedDriver.email,
+                  license_number: value.editedDriver.license_number,
+                  name: value.editedDriver.name,
+                  phone: value.editedDriver.phone,
+                }
+              : driver
+          )
+        );
+      } catch (error) {
+        console.error("Error while deleting vehicle:", error);
       }
+      return;
     }
     if (action === "delete") {
       try {
