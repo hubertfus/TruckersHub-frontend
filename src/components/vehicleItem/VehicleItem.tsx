@@ -115,7 +115,9 @@ const VehicleItem = ({
           <button
             className="btn btn-primary btn-sm w-f"
             onClick={() => {
-              const dialog = document.getElementById("editVehicle");
+              const dialog = document.getElementById(
+                `editVehicle${vehicle._id}`
+              );
               if (dialog && dialog instanceof HTMLDialogElement) {
                 dialog.showModal();
               }
@@ -169,7 +171,7 @@ const VehicleItem = ({
       </Dialog>
 
       <Dialog
-        id="editVehicle"
+        id={`editVehicle${vehicle._id}`}
         title="Edit Vehicle"
         acceptText="Save"
         closeText="Cancel"
